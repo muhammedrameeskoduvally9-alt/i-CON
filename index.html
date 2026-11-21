@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>i-Con | Isha-athussunna Dawa Dars</title>
+  <meta name="theme-color" content="#0f3d3e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link id="manifest-placeholder" rel="manifest" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f4f7f6; color: #1e293b; }
+    .arabic { font-family: 'Amiri', serif; }
+    .bg-brand { background-color: #0f3d3e; }
+    .text-brand { color: #0f3d3e; }
+    .border-brand { border-color: #0f3d3e; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    @media print {
+      body * { visibility: hidden; }
+      #printable-report, #printable-report * { visibility: visible; }
+      #printable-report { position: fixed; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
+      #printable-receipt, #printable-receipt * { visibility: visible; }
+      #printable-receipt { position: fixed; left: 0; top: 0; width: 100%; padding: 20px; background: white; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="pb-20 select-none">
+
+  <!-- TOP HEADER -->
+  <header class="bg-brand text-white sticky top-0 z-40 shadow-md">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div id="header-logo" class="w-10 h-10 rounded-xl bg-white p-1 flex items-center justify-center overflow-hidden shadow-sm">
+          <svg viewBox="0 0 100 120" class="w-full h-full">
+            <path d="M50 5 C50 5 15 52 15 80 C15 100 31 115 50 115 C69 115 85 100 85 80 C85 52 50 5 50 5 Z M50 32 C62 50 68 65 68 78 C68 89 60 98 50 98 C40 98 32 89 32 78 C32 65 38 50 50 32 Z" fill="#0f3d3e"/>
+            <path d="M50 32 C42 48 42 68 50 85 C58 68 58 48 50 32 Z" fill="#1b5e60"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-extrabold text-lg tracking-tight leading-none">i-Con</h1>
+            <span id="sync-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">Ready</span>
+          </div>
+          <p class="text-[11px] text-teal-100/80 leading-tight mt-0.5">Isha-athussunna Dawa Dars</p>
+        </div>
+      </div>
+      <div id="header-actions" class="hidden flex items-center gap-2">
+        <button onclick="syncFromCloud(true)" title="Refresh Data" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 active:scale-95 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+        <button onclick="logout()" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-500/20 text-red-100 border border-red-400/30 hover:bg-red-500/30">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LOGIN SCREEN -->
+  <main id="login-screen" class="max-w-md mx-auto px-4 pt-8">
+    <div class="bg-white rounded-3xl shadow-xl border border-slate-100 p-6 text-center">
+      <div class="w-24 h-24 mx-auto mb-3 rounded-2xl bg-teal-50/60 p-2 flex items-center justify-center border border-teal-100 overflow-hidden" id="login-logo-box">
+        <svg viewBox="0 0 100 120" class="w-full h-full">
+          <path d="M50 5 C50 5 15 52 15 80 C15 100 31 115 50 115 C69 115 85 100 85 80 C85 52 50 5 50 5 Z M50 32 C62 50 68 65 68 78 C68 89 60 98 50 98 C40 98 32 89 32 78 C32 65 38 50 50 32 Z" fill="#0f3d3e"/>
+          <path d="M50 32 C42 48 42 68 50 85 C58 68 58 48 50 32 Z" fill="#1b5e60"/>
+        </svg>
+      </div>
+      <h2 class="text-xl font-extrabold text-slate-800 mt-0.5">i-Con Portal</h2>
+      <p class="text-xs text-slate-500 mt-1">Isha-athussunna Dawa Dars • Puthuppadam Ayikkarappadi</p>
+      <p class="text-[11px] text-slate-400 mt-0.5">Contact: 9846660216, 7510733537</p>
+
+      <form onsubmit="handleLogin(event)" class="mt-6 text-left space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Enter Student ID or Ustad PIN</label>
+          <input type="text" id="login-pin" required placeholder="e.g. ST001" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 focus:border-brand focus:ring-2 focus:ring-teal-900/20 outline-none font-bold text-center text-lg uppercase tracking-widest" />
+        </div>
+        <button type="submit" class="w-full bg-brand text-white font-bold py-3.5 rounded-xl shadow-lg shadow-teal-950/20 hover:opacity-95 active:scale-[0.99] transition">
+          Sign In to i-Con
+        </button>
+      </form>
+      <div id="login-error" class="hidden mt-3 text-xs font-semibold text-red-600 bg-red-50 py-2 px-3 rounded-lg">Invalid ID or PIN. Please try again.</div>
+    </div>
+  </main>
+
+  <!-- STUDENT APP VIEW -->
+  <div id="student-app" class="hidden max-w-4xl mx-auto px-4 pt-4 space-y-4">
+    <!-- Notice Banner -->
+    <div id="student-notice-banner" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-3.5 flex items-start gap-3">
+      <span class="text-amber-600 text-lg">📢</span>
+      <div class="flex-1">
+        <div class="flex items-center justify-between">
+          <h4 id="notice-banner-title" class="text-xs font-bold text-amber-900 uppercase tracking-wide">Notice</h4>
+          <span id="notice-banner-date" class="text-[10px] text-amber-700"></span>
+        </div>
+        <p id="notice-banner-msg" class="text-xs text-amber-800 mt-0.5"></p>
+        <div id="notice-banner-by" class="text-[10px] font-semibold text-amber-700 mt-1"></div>
+      </div>
+    </div>
+
+    <!-- TAB 1: HOME / DAILY -->
+    <section id="st-tab-home" class="space-y-4">
+      <!-- Live Now & Next Schedule Card (12-Hour Clock) -->
+      <div id="live-schedule-card" class="bg-gradient-to-br from-[#0f3d3e] to-[#1a5f61] text-white rounded-2xl p-4 shadow-md">
+        <div class="flex items-center justify-between">
+          <span class="text-[10px] font-bold uppercase tracking-widest bg-white/15 px-2.5 py-1 rounded-full" id="st-batch-badge">Batch A</span>
+          <span class="text-xs font-bold text-teal-100" id="live-clock"></span>
+        </div>
+        <div class="mt-3 grid grid-cols-2 gap-3">
+          <div class="bg-white/10 rounded-xl p-2.5">
+            <div class="text-[10px] uppercase text-teal-200 font-semibold">Current Session (Now)</div>
+            <div id="now-session" class="font-bold text-sm mt-0.5 truncate">--</div>
+          </div>
+          <div class="bg-white/10 rounded-xl p-2.5">
+            <div class="text-[10px] uppercase text-teal-200 font-semibold">Up Next (Next Subject)</div>
+            <div id="next-session" class="font-bold text-sm mt-0.5 truncate">--</div>
+          </div>
+        </div>
+        <button onclick="openTimetableModal()" class="mt-3 w-full text-center text-xs font-semibold text-teal-100 hover:text-white underline">View Full Weekly Timetable & Kithabukal →</button>
+      </div>
+
+      <!-- Assigned & Pending Projects Section with Student Submission -->
+      <div id="st-projects-section" class="space-y-2.5"></div>
+
+      <!-- Daily Routine Form -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div>
+            <h3 class="font-extrabold text-slate-800 text-base">Daily Routine Tracker</h3>
+            <p class="text-xs text-slate-500">Log your daily ibadah & academic habits</p>
+          </div>
+          <input type="date" id="daily-date" onchange="loadDailyForDate()" class="text-xs font-bold border border-slate-200 rounded-lg px-2.5 py-1.5 text-brand outline-none" />
+        </div>
+
+        <!-- Live Score Preview -->
+        <div class="my-3 bg-teal-50/80 border border-teal-100 rounded-xl p-3 flex items-center justify-between">
+          <div>
+            <div class="text-[11px] font-semibold text-teal-800">Estimated Daily Score</div>
+            <div class="text-[10px] text-teal-600">Auto-calculated per Dars formula</div>
+          </div>
+          <div class="text-2xl font-black text-brand"><span id="daily-live-pts">0</span> <span class="text-xs font-bold">pts</span></div>
+        </div>
+
+        <form id="daily-form" onsubmit="submitDailyRoutine(event)" class="space-y-4">
+          <!-- Attendance Only Records -->
+          <div class="bg-slate-50 rounded-xl p-3 space-y-3">
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Academic Attendance (Record Only)</div>
+            <label class="flex items-center justify-between bg-white p-2.5 rounded-lg border border-slate-200 cursor-pointer">
+              <span class="text-sm font-semibold text-slate-700">School / Plus Two Attended</span>
+              <input type="checkbox" id="chk-school" class="w-5 h-5 accent-[#0f3d3e] rounded" />
+            </label>
+            <div>
+              <div class="text-xs font-semibold text-slate-700 mb-1.5">Daily Sabq (Select Kithabukal Studied Today)</div>
+              <div id="sabq-kithab-list" class="flex flex-wrap gap-1.5"></div>
+            </div>
+          </div>
+
+          <!-- Dynamic Daily Routine Items (Toggles & Counts) -->
+          <div>
+            <div class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Daily Ibadah & Habits</div>
+            <div id="daily-items-container" class="space-y-2.5"></div>
+          </div>
+
+          <button type="submit" class="w-full bg-brand text-white font-bold py-3.5 rounded-xl shadow-md hover:opacity-95 active:scale-[0.99] transition">
+            Save Daily Entry
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 2: LEADERBOARD & 6 MONTHLY AWARDS -->
+    <section id="st-tab-ranks" class="hidden space-y-4">
+      <!-- 4 Score Pillars Summary -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
+          <div class="text-[10px] font-bold uppercase text-slate-400">Daily Status</div>
+          <div id="my-stat-daily" class="text-xl font-black text-brand mt-0.5">0</div>
+          <div id="my-rank-daily" class="text-[10px] font-semibold text-emerald-600">Rank #--</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
+          <div class="text-[10px] font-bold uppercase text-slate-400">Competitions</div>
+          <div id="my-stat-comp" class="text-xl font-black text-amber-600 mt-0.5">0</div>
+          <div id="my-rank-comp" class="text-[10px] font-semibold text-slate-500">Individual</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
+          <div class="text-[10px] font-bold uppercase text-slate-400">Club Perform.</div>
+          <div id="my-stat-club" class="text-xl font-black text-indigo-600 mt-0.5">0</div>
+          <div id="my-rank-club" class="text-[10px] font-semibold text-slate-500">11 Clubs</div>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
+          <div class="text-[10px] font-bold uppercase text-slate-400">Academic & Proj.</div>
+          <div id="my-stat-acad" class="text-xl font-black text-rose-600 mt-0.5">0</div>
+          <div id="my-rank-acad" class="text-[10px] font-semibold text-slate-500">Ustad Desk</div>
+        </div>
+      </div>
+
+      <!-- 6 Monthly Auto-Calculated Awards -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-extrabold text-slate-800 text-sm">🎖️ 6 Monthly Champions (Live Auto-Rank)</h3>
+          <span class="text-[10px] font-bold text-brand bg-teal-50 px-2 py-0.5 rounded-full">Current Month</span>
+        </div>
+        <div id="monthly-awards-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs"></div>
+      </div>
+
+      <!-- 4 Teams Live Standings (Competitions + Club + Academic/Projects + Group Team Points, Excluding Daily Routine) -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-extrabold text-slate-800 text-sm">🏆 4 Teams Overall Standings</h3>
+          <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Comp + Club + Acad (Excl. Daily)</span>
+        </div>
+        <div id="team-standings-list" class="space-y-2.5"></div>
+      </div>
+
+      <!-- Category Leaderboard -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <h3 class="font-extrabold text-slate-800 text-sm">📊 Student Leaderboard</h3>
+          <div class="flex gap-1 bg-slate-100 p-1 rounded-lg text-xs font-bold">
+            <button onclick="setLbCat('All')" class="lb-cat-btn px-2.5 py-1 rounded-md bg-white shadow-sm text-brand" data-cat="All">All</button>
+            <button onclick="setLbCat('Senior')" class="lb-cat-btn px-2.5 py-1 rounded-md text-slate-600" data-cat="Senior">Senior</button>
+            <button onclick="setLbCat('Junior')" class="lb-cat-btn px-2.5 py-1 rounded-md text-slate-600" data-cat="Junior">Junior</button>
+            <button onclick="setLbCat('Sub Junior')" class="lb-cat-btn px-2.5 py-1 rounded-md text-slate-600" data-cat="Sub Junior">Sub-Jr</button>
+          </div>
+        </div>
+        <div class="flex gap-2 mb-3 overflow-x-auto no-scrollbar">
+          <button onclick="setLbType('daily')" class="lb-type-btn text-xs font-bold px-3 py-1.5 rounded-full bg-brand text-white" data-type="daily">Monthly Daily</button>
+          <button onclick="setLbType('comp')" class="lb-type-btn text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600" data-type="comp">Competitions</button>
+          <button onclick="setLbType('club')" class="lb-type-btn text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600" data-type="club">Club Points</button>
+          <button onclick="setLbType('acad')" class="lb-type-btn text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600" data-type="acad">Projects/Acad</button>
+        </div>
+        <div id="leaderboard-rows" class="divide-y divide-slate-100"></div>
+      </div>
+
+      <!-- My Competition History -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+        <h3 class="font-extrabold text-slate-800 text-sm mb-2">🥇 My Individual Competition Results</h3>
+        <div id="my-comp-history" class="space-y-2 text-xs"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: CLUBS, FINANCE TREASURY, BOOKS & LEAVE -->
+    <section id="st-tab-activities" class="hidden space-y-4">
+      <!-- Club Leader Performance Desk (Shown ONLY if logged-in student is a Club Leader) -->
+      <div id="club-leader-panel" class="hidden bg-indigo-50 border border-indigo-200 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase bg-indigo-600 text-white px-2 py-0.5 rounded">Club Performance Desk</span>
+            <h3 id="leader-club-title" class="font-extrabold text-indigo-950 text-base mt-1">Club Name</h3>
+          </div>
+        </div>
+        <form onsubmit="submitClubPoints(event)" class="space-y-3 bg-white p-3.5 rounded-xl border border-indigo-100">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <input type="text" id="cl-event" required placeholder="Program / Activity Name" class="text-xs border border-slate-200 rounded-lg px-3 py-2 outline-none" />
+            <select id="cl-student" required class="text-xs border border-slate-200 rounded-lg px-3 py-2 outline-none"></select>
+          </div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <input type="number" id="cl-points" required placeholder="Points (e.g. 5 or -2)" class="text-xs border border-slate-200 rounded-lg px-3 py-2 outline-none" />
+            <input type="text" id="cl-remark" placeholder="Performance / Reason" class="text-xs border border-slate-200 rounded-lg px-3 py-2 outline-none" />
+          </div>
+          <button type="submit" class="w-full bg-indigo-600 text-white text-xs font-bold py-2.5 rounded-lg hover:bg-indigo-700">Award / Deduct Club Points</button>
+        </form>
+
+        <!-- FINANCE CLUB SPECIAL DESK (Premium Members, Ledger & Digital Receipt) -->
+        <div id="finance-club-desk" class="hidden pt-3 border-t border-indigo-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="font-extrabold text-emerald-900 text-sm">💰 Finance Club Treasury & Premium Members</h4>
+            <span id="fin-balance-badge" class="text-xs font-black bg-emerald-600 text-white px-2.5 py-1 rounded-lg">Balance: ₹0</span>
+          </div>
+
+          <!-- Add Premium Member / Contribution & Generate Receipt -->
+          <form onsubmit="submitFinanceEntry(event)" class="bg-white p-3.5 rounded-xl border border-emerald-200 space-y-2.5 text-xs">
+            <div class="font-bold text-emerald-800">Record Contribution / Expense & Generate Digital Receipt</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <select id="fin-type" class="border border-slate-200 rounded-lg px-3 py-2 font-bold">
+                <option value="Income">Income / Subscription (+)</option>
+                <option value="Expense">Expense / Payout (-)</option>
+              </select>
+              <input type="text" id="fin-member" required placeholder="Member / Payer Name" class="border border-slate-200 rounded-lg px-3 py-2" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="number" id="fin-amount" required placeholder="Amount (₹)" class="border border-slate-200 rounded-lg px-3 py-2" />
+              <label class="flex items-center gap-2 px-3 py-2 border border-slate-200 rounded-lg cursor-pointer bg-amber-50/50">
+                <input type="checkbox" id="fin-premium" class="accent-amber-600" />
+                <span class="font-bold text-amber-900">Premium Member</span>
+              </label>
+            </div>
+            <input type="text" id="fin-purpose" required placeholder="Purpose (e.g. Monthly Dars Fund / Event)" class="w-full border border-slate-200 rounded-lg px-3 py-2" />
+            <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-2.5 rounded-lg hover:bg-emerald-800">Save Entry & Generate Receipt</button>
+          </form>
+
+          <!-- Premium Members List -->
+          <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+            <div class="text-xs font-extrabold text-amber-800">⭐ Premium Members Directory</div>
+            <div id="fin-premium-list" class="flex flex-wrap gap-1.5 text-xs"></div>
+          </div>
+
+          <!-- Recent Finance Transactions with Receipt View -->
+          <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
+            <div class="text-xs font-extrabold text-slate-700">Recent Transactions & Receipts</div>
+            <div id="fin-tx-list" class="space-y-1.5 text-xs max-h-48 overflow-y-auto"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Club Performance Log -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+        <h3 class="font-extrabold text-slate-800 text-sm mb-2">🏛️ My Club Performance & Involvement</h3>
+        <div id="my-club-logs" class="space-y-2 text-xs"></div>
+      </div>
+
+      <!-- Library & Extra Book Reading Log -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <h3 class="font-extrabold text-slate-800 text-sm">📚 Library & Extra Book Reading Log</h3>
+        <form onsubmit="submitBookLog(event)" class="space-y-2.5 bg-slate-50 p-3 rounded-xl">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <input type="text" id="bk-title" required placeholder="Book Title (Library / Extra Book)" class="text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 outline-none" />
+            <input type="text" id="bk-author" placeholder="Author Name" class="text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 outline-none" />
+          </div>
+          <textarea id="bk-summary" rows="3" required placeholder="Write extra notes, review, or key lessons learned from this book..." class="w-full text-xs bg-white border border-slate-200 rounded-lg px-3 py-2 outline-none"></textarea>
+          <button type="submit" class="bg-brand text-white text-xs font-bold px-4 py-2 rounded-lg">Save Book Note & Review</button>
+        </form>
+        <div id="my-books-list" class="space-y-2 text-xs"></div>
+      </div>
+
+      <!-- Leave Application -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <h3 class="font-extrabold text-slate-800 text-sm">🗓️ Leave Application</h3>
+        <form onsubmit="submitLeaveRequest(event)" class="space-y-2.5 bg-slate-50 p-3 rounded-xl">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] font-bold text-slate-500">From Date</label>
+              <input type="date" id="lv-from" required class="w-full text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5" />
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-500">To Date</label>
+              <input type="date" id="lv-to" required class="w-full text-xs bg-white border border-slate-200 rounded-lg px-2.5 py-1.5" />
+            </div>
+          </div>
+          <input type="text" id="lv-reason" required placeholder="Reason for leave..." class="w-full text-xs bg-white border border-slate-200 rounded-lg px-3 py-2" />
+          <button type="submit" class="bg-brand text-white text-xs font-bold px-4 py-2 rounded-lg">Submit Leave Request</button>
+        </form>
+        <div id="my-leaves-list" class="space-y-2 text-xs"></div>
+      </div>
+    </section>
+
+    <!-- TAB 4: PROFILE & REPORT CARD -->
+    <section id="st-tab-profile" class="hidden space-y-4">
+      <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+        <div class="flex items-center gap-4">
+          <div class="relative shrink-0">
+            <img id="prof-photo" src="https://ui-avatars.com/api/?name=Student&background=0f3d3e&color=fff" class="w-20 h-20 rounded-2xl object-cover border-2 border-brand" />
+            <label title="Upload Square Profile Photo (400x400px)" class="absolute -bottom-1 -right-1 bg-brand text-white p-1.5 rounded-lg cursor-pointer shadow">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <input type="file" accept="image/*" onchange="uploadProfilePhoto(event)" class="hidden" />
+            </label>
+          </div>
+          <div>
+            <span id="prof-id" class="text-[10px] font-extrabold bg-teal-50 text-brand px-2 py-0.5 rounded">ST001</span>
+            <h2 id="prof-name" class="text-lg font-extrabold text-slate-800 mt-0.5">Student Name</h2>
+            <p id="prof-meta" class="text-xs text-slate-500">Category • Team • Batch</p>
+            <p id="prof-club-role" class="text-[11px] font-bold text-indigo-600 mt-0.5"></p>
+          </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="mt-4 pt-3 border-t border-slate-100">
+          <div class="text-xs font-bold text-slate-500 uppercase mb-2">🏅 Earned Merit Badges</div>
+          <div id="prof-badges" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Personal Details Self-Update Form -->
+        <form onsubmit="savePersonalProfile(event)" class="mt-4 pt-3 border-t border-slate-100 space-y-3">
+          <div class="text-xs font-bold text-slate-500 uppercase">Personal Profile Details (Self-Editable)</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">Guardian Name</label>
+              <input type="text" id="pd-guardian" class="w-full border border-slate-200 rounded-lg px-3 py-2 mt-0.5" />
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">WhatsApp / Phone Number</label>
+              <input type="tel" id="pd-phone" class="w-full border border-slate-200 rounded-lg px-3 py-2 mt-0.5" />
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">ID / Admission Reference</label>
+              <input type="text" id="pd-aadhaar" class="w-full border border-slate-200 rounded-lg px-3 py-2 mt-0.5" />
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">Blood Group & DOB</label>
+              <input type="text" id="pd-dob" placeholder="e.g. O+ | 12-05-2008" class="w-full border border-slate-200 rounded-lg px-3 py-2 mt-0.5" />
+            </div>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-400">Full House Address</label>
+            <textarea id="pd-address" rows="2" class="w-full text-xs border border-slate-200 rounded-lg px-3 py-2 mt-0.5"></textarea>
+          </div>
+          <button type="submit" class="bg-brand text-white text-xs font-bold px-4 py-2 rounded-lg">Save My Profile</button>
+        </form>
+      </div>
+
+      <!-- Ustad Remarks & Class/Note Check History -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+        <h3 class="font-extrabold text-slate-800 text-sm mb-2">👨‍🏫 Ustads' Remarks & Note Completion Log</h3>
+        <div id="prof-evaluations" class="space-y-2 text-xs"></div>
+      </div>
+
+      <!-- Monthly Progress Report Card & WhatsApp Share -->
+      <div id="printable-report" class="bg-white rounded-2xl p-5 border-2 border-brand/20 shadow-sm space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div>
+            <div class="arabic text-lg font-bold text-brand">إشاعة السنة</div>
+            <h4 class="font-extrabold text-sm text-slate-800">Isha-athussunna Dawa Dars</h4>
+            <p class="text-[10px] text-slate-500">Monthly Student Progress Report Card</p>
+          </div>
+          <div class="text-right text-[10px] text-slate-500">
+            <div class="font-bold text-brand" id="rep-month">Current Month</div>
+            <div>Puthuppadam Ayikkarappadi</div>
+          </div>
+        </div>
+        <div id="rep-body" class="grid grid-cols-2 gap-2 text-xs"></div>
+        <div class="flex gap-2 pt-2 no-print">
+          <button onclick="shareReportWhatsApp()" class="flex-1 bg-emerald-600 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5">
+            <span>Share on WhatsApp</span>
+          </button>
+          <button onclick="window.print()" class="px-4 bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl">Print A5</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENT BOTTOM NAVIGATION -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40">
+      <div class="max-w-4xl mx-auto grid grid-cols-4 py-2 text-[11px] font-bold text-slate-500">
+        <button onclick="switchStTab('home')" class="st-nav-btn flex flex-col items-center gap-0.5 text-brand" data-tab="home">
+          <span>🏠</span><span>Daily</span>
+        </button>
+        <button onclick="switchStTab('ranks')" class="st-nav-btn flex flex-col items-center gap-0.5" data-tab="ranks">
+          <span>🏆</span><span>Ranks</span>
+        </button>
+        <button onclick="switchStTab('activities')" class="st-nav-btn flex flex-col items-center gap-0.5" data-tab="activities">
+          <span>🎯</span><span>Clubs & Desk</span>
+        </button>
+        <button onclick="switchStTab('profile')" class="st-nav-btn flex flex-col items-center gap-0.5" data-tab="profile">
+          <span>👤</span><span>Profile</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- USTAD / ADMIN PORTAL -->
+  <div id="ustad-app" class="hidden max-w-5xl mx-auto px-4 pt-4 space-y-4">
+    <div class="bg-brand text-white rounded-2xl p-4 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <span class="text-[10px] font-bold uppercase tracking-widest bg-white/15 px-2 py-0.5 rounded">Ustad Control Desk</span>
+        <h2 id="ustad-welcome" class="text-lg font-extrabold mt-0.5">Welcome, Ustad</h2>
+      </div>
+      <div class="flex gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
+        <button onclick="switchUstadTab('eval')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white text-brand" data-utab="eval">Class & Note Check</button>
+        <button onclick="switchUstadTab('projects')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="projects">Projects</button>
+        <button onclick="switchUstadTab('comp')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="comp">Competitions</button>
+        <button onclick="switchUstadTab('leaves')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="leaves">Leaves, Notices & Fin</button>
+        <button onclick="switchUstadTab('students')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="students">Students & Clubs</button>
+        <button onclick="switchUstadTab('settings')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="settings">Edit App & Timetable</button>
+      </div>
+    </div>
+
+    <!-- USTAD TAB 1: DAILY CLASS, BATCH SUBJECT NOTE CHECK & BEHAVIOUR -->
+    <section id="ust-tab-eval" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <h3 class="font-extrabold text-slate-800 text-sm">📝 Batch Subject Note Check & Evaluation</h3>
+        <form onsubmit="submitEvaluation(event)" class="space-y-2.5 text-xs">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">Filter by Batch</label>
+              <select id="ev-batch-filter" onchange="onEvalBatchChange()" class="w-full border border-slate-200 rounded-lg px-2.5 py-2 font-bold text-brand">
+                <option value="ALL">All Batches</option>
+                <option value="Batch A">Batch A</option>
+                <option value="Batch B">Batch B</option>
+                <option value="Batch C">Batch C</option>
+                <option value="Batch D">Batch D</option>
+                <option value="Batch E">Batch E</option>
+                <option value="Batch F">Batch F</option>
+                <option value="Batch G">Batch G</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">Select Subject / Kithab</label>
+              <select id="ev-kithab" class="w-full arabic border border-slate-200 rounded-lg px-2.5 py-2 font-bold"></select>
+            </div>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-slate-400">Select Student</label>
+            <select id="ev-student" onchange="syncEvalKithabsForStudent()" required class="w-full border border-slate-200 rounded-lg px-3 py-2 font-semibold"></select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">Note Completion</label>
+              <select id="ev-note" class="w-full border border-slate-200 rounded-lg px-2.5 py-2">
+                <option>Completed</option><option>Incomplete</option><option>Pending</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">Behaviour</label>
+              <select id="ev-behav" class="w-full border border-slate-200 rounded-lg px-2.5 py-2">
+                <option>Excellent</option><option>Good</option><option>Needs Improvement</option><option>Warning</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">Academic Status</label>
+              <select id="ev-acad" class="w-full border border-slate-200 rounded-lg px-2.5 py-2">
+                <option>Outstanding</option><option>On Track</option><option>Lagging</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold text-slate-400">Class Attendance</label>
+              <select id="ev-att" class="w-full border border-slate-200 rounded-lg px-2.5 py-2">
+                <option>Regular</option><option>Late</option><option>Absent</option>
+              </select>
+            </div>
+          </div>
+          <input type="number" id="ev-points" placeholder="Academic / Note Points (e.g. 10 or -5)" value="5" class="w-full border border-slate-200 rounded-lg px-3 py-2" />
+          <textarea id="ev-remarks" rows="2" required placeholder="Detailed Ustad Remarks (Visible on Student Profile)..." class="w-full border border-slate-200 rounded-lg px-3 py-2"></textarea>
+          <button type="submit" class="w-full bg-brand text-white font-bold py-2.5 rounded-xl">Save Evaluation & Note Check</button>
+        </form>
+      </div>
+
+      <div class="space-y-4">
+        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+          <h3 class="font-extrabold text-slate-800 text-sm">🏅 Award Merit / Discipline Badge</h3>
+          <form onsubmit="submitBadge(event)" class="space-y-2.5 text-xs">
+            <select id="bg-student" required class="w-full border border-slate-200 rounded-lg px-3 py-2 font-semibold"></select>
+            <div class="grid grid-cols-3 gap-2">
+              <select id="bg-icon" class="border border-slate-200 rounded-lg px-2 py-2 text-base">
+                <option value="🌟">🌟 Star</option>
+                <option value="⏰">⏰ Punctual</option>
+                <option value="📖">📖 Scholar</option>
+                <option value="🕌">🕌 Ibadah</option>
+                <option value="🏆">🏆 Champion</option>
+              </select>
+              <input type="text" id="bg-title" required placeholder="Badge Title (e.g. Star of the Week)" class="col-span-2 border border-slate-200 rounded-lg px-3 py-2" />
+            </div>
+            <input type="text" id="bg-reason" required placeholder="Reason for awarding badge..." class="w-full border border-slate-200 rounded-lg px-3 py-2" />
+            <button type="submit" class="w-full bg-amber-600 text-white font-bold py-2.5 rounded-xl">Award Badge</button>
+          </form>
+        </div>
+
+        <!-- Live 6 Monthly Awards Overview for Ustads -->
+        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-2">
+          <h3 class="font-extrabold text-slate-800 text-sm">🎖️ Live 6 Monthly Award Leaders</h3>
+          <div id="ust-awards-preview" class="space-y-1.5 text-xs"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USTAD TAB 2: WEEKLY PROJECTS (ASSIGN, VIEW SUBMISSIONS & TICK APPROVE) -->
+    <section id="ust-tab-projects" class="hidden space-y-4">
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <h3 class="font-extrabold text-slate-800 text-sm">📌 Assign New Weekly Project</h3>
+        <form onsubmit="createProject(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+          <input type="text" id="pj-title" required placeholder="Project Topic / Title" class="border border-slate-200 rounded-lg px-3 py-2" />
+          <select id="pj-batch" class="border border-slate-200 rounded-lg px-3 py-2">
+            <option value="ALL">All Students</option>
+            <option value="Senior">Senior Category</option>
+            <option value="Junior">Junior Category</option>
+            <option value="Sub Junior">Sub Junior Category</option>
+            <option value="Batch A">Batch A</option>
+            <option value="Batch B">Batch B</option>
+            <option value="Batch C">Batch C</option>
+            <option value="Batch D">Batch D</option>
+            <option value="Batch E">Batch E</option>
+            <option value="Batch F">Batch F</option>
+            <option value="Batch G">Batch G</option>
+          </select>
+          <input type="date" id="pj-due" required class="border border-slate-200 rounded-lg px-3 py-2" />
+          <input type="number" id="pj-pts" required value="15" placeholder="Completion Points" class="border border-slate-200 rounded-lg px-3 py-2" />
+          <textarea id="pj-desc" rows="2" placeholder="Project instructions & guidelines..." class="sm:col-span-2 border border-slate-200 rounded-lg px-3 py-2"></textarea>
+          <button type="submit" class="sm:col-span-2 bg-brand text-white font-bold py-2.5 rounded-xl">Publish Project (Will show Assigned by ${APP.user ? APP.user.data.name : 'Ustad'})</button>
+        </form>
+      </div>
+      <div id="ust-projects-list" class="space-y-3"></div>
+    </section>
+
+    <!-- USTAD TAB 3: COMPETITIONS (INDIVIDUAL + DIRECT TEAM GROUP POINTS) -->
+    <section id="ust-tab-comp" class="hidden space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+          <h3 class="font-extrabold text-slate-800 text-sm">🥇 Individual Competition Result</h3>
+          <form onsubmit="submitCompetition(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <input type="text" id="cp-title" required placeholder="Item (e.g. Arabic Speech)" class="border border-slate-200 rounded-lg px-3 py-2" />
+            <select id="cp-student" required class="border border-slate-200 rounded-lg px-3 py-2 font-semibold"></select>
+            <select id="cp-pos" class="border border-slate-200 rounded-lg px-3 py-2">
+              <option>1st Place</option><option>2nd Place</option><option>3rd Place</option><option>A Grade</option><option>B Grade</option>
+            </select>
+            <input type="number" id="cp-pts" required placeholder="Points (e.g. 10)" class="border border-slate-200 rounded-lg px-3 py-2" />
+            <button type="submit" class="sm:col-span-2 bg-brand text-white font-bold py-2.5 rounded-xl">Publish Individual Points</button>
+          </form>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+          <h3 class="font-extrabold text-slate-800 text-sm">🏆 Direct Team / Group Item Points</h3>
+          <form onsubmit="submitTeamCompetition(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <input type="text" id="tcp-title" required placeholder="Group Item (e.g. Duff, Quiz, Debate)" class="border border-slate-200 rounded-lg px-3 py-2" />
+            <select id="tcp-team" required class="border border-slate-200 rounded-lg px-3 py-2 font-semibold">
+              <option>Fatih's Force</option><option>Cordoba Knights</option><option>Samarqand Avengers</option><option>Baghdad Gild</option>
+            </select>
+            <select id="tcp-pos" class="border border-slate-200 rounded-lg px-3 py-2">
+              <option>1st Place</option><option>2nd Place</option><option>3rd Place</option><option>Team Bonus</option>
+            </select>
+            <input type="number" id="tcp-pts" required placeholder="Team Points (e.g. 20)" class="border border-slate-200 rounded-lg px-3 py-2" />
+            <button type="submit" class="sm:col-span-2 bg-amber-600 text-white font-bold py-2.5 rounded-xl">Add Direct Team Points</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+        <h4 class="font-bold text-xs uppercase text-slate-500 mb-2">Recent Competition Entries (Individual & Team)</h4>
+        <div id="ust-comp-list" class="space-y-1.5 text-xs"></div>
+      </div>
+    </section>
+
+    <!-- USTAD TAB 4: LEAVES, NOTICES & FINANCE OVERVIEW -->
+    <section id="ust-tab-leaves" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <h3 class="font-extrabold text-slate-800 text-sm">📢 Post Notice Board Announcement</h3>
+        <form onsubmit="submitNotice(event)" class="space-y-2.5 text-xs">
+          <input type="text" id="nt-title" required placeholder="Notice Headline" class="w-full border border-slate-200 rounded-lg px-3 py-2" />
+          <textarea id="nt-msg" rows="3" required placeholder="Announcement details..." class="w-full border border-slate-200 rounded-lg px-3 py-2"></textarea>
+          <button type="submit" class="w-full bg-brand text-white font-bold py-2.5 rounded-xl">Post to All Students</button>
+        </form>
+      </div>
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <h3 class="font-extrabold text-slate-800 text-sm">🗓️ Pending & Recent Leave Requests</h3>
+        <div id="ust-leaves-list" class="space-y-2 text-xs"></div>
+      </div>
+      <div class="md:col-span-2 bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-2">
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold text-slate-800 text-sm">💰 Finance Club Ledger & Premium Members Overview</h3>
+          <span id="ust-fin-balance" class="text-xs font-black text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">Balance: ₹0</span>
+        </div>
+        <div id="ust-fin-list" class="space-y-1.5 text-xs"></div>
+      </div>
+    </section>
+
+    <!-- USTAD TAB 5: STUDENTS DIRECTORY, EDIT STUDENT & 11 CLUBS LEADERS -->
+    <section id="ust-tab-students" class="hidden space-y-4">
+      <!-- 11 Clubs & Leaders Assignment -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <h3 class="font-extrabold text-slate-800 text-sm">🏛️ Manage 11 Clubs & Student Leaders (Including Finance Club & General Convener)</h3>
+        <div id="ust-clubs-editor" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"></div>
+      </div>
+
+      <!-- Add New Student -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <h3 class="font-extrabold text-slate-800 text-sm">➕ Add New Student</h3>
+        <form onsubmit="addNewStudent(event)" class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+          <input type="text" id="ns-id" required placeholder="ID (e.g. ST029)" class="border border-slate-200 rounded-lg px-3 py-2 uppercase" />
+          <input type="text" id="ns-name" required placeholder="Full Name" class="border border-slate-200 rounded-lg px-3 py-2 uppercase" />
+          <select id="ns-cat" class="border border-slate-200 rounded-lg px-3 py-2">
+            <option>Sub Junior</option><option>Junior</option><option>Senior</option>
+          </select>
+          <select id="ns-team" class="border border-slate-200 rounded-lg px-3 py-2">
+            <option>Fatih's Force</option><option>Cordoba Knights</option><option>Samarqand Avengers</option><option>Baghdad Gild</option>
+          </select>
+          <select id="ns-batch" class="border border-slate-200 rounded-lg px-3 py-2">
+            <option>Batch A</option><option>Batch B</option><option>Batch C</option><option>Batch D</option><option>Batch E</option><option>Batch F</option><option>Batch G</option>
+          </select>
+          <button type="submit" class="bg-brand text-white font-bold py-2 rounded-lg">Add Student</button>
+        </form>
+      </div>
+
+      <!-- Student Directory with Inline Edit -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-extrabold text-slate-800 text-sm">📋 Complete Student Directory (Edit Category / Batch / Team)</h3>
+          <input type="text" id="st-search" onkeyup="renderUstadStudents()" placeholder="Search student..." class="text-xs border border-slate-200 rounded-lg px-3 py-1.5" />
+        </div>
+        <div id="ust-students-list" class="divide-y divide-slate-100 text-xs"></div>
+      </div>
+    </section>
+
+    <!-- USTAD TAB 6: DYNAMIC APP SETTINGS (EDIT TIMETABLES, KITHABS, HABITS, LOGO, SYNC) -->
+    <section id="ust-tab-settings" class="hidden space-y-4">
+      <!-- Cloud Connection -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-2.5">
+        <h3 class="font-extrabold text-slate-800 text-sm">☁️ Google Sheet Backend Sync</h3>
+        <p class="text-xs text-slate-500">Paste your deployed Google Apps Script Web App URL to sync all Dars data across devices.</p>
+        <div class="flex gap-2">
+          <input type="url" id="cfg-api-url" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-2" />
+          <button onclick="saveApiUrl()" class="bg-brand text-white text-xs font-bold px-4 py-2 rounded-lg">Save & Sync</button>
+        </div>
+      </div>
+
+      <!-- Custom Dars Logo Upload -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-2">
+        <h3 class="font-extrabold text-slate-800 text-sm">🖼️ Custom Dars App Logo (Recommended: 512 x 512 px Square PNG/JPG)</h3>
+        <input type="file" accept="image/*" onchange="uploadDarsLogo(event)" class="text-xs" />
+      </div>
+
+      <!-- Edit Batch Kithabukal / Subjects -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <h3 class="font-extrabold text-slate-800 text-sm">📚 Edit Batch Kithabukal & Subjects (Batch A - G)</h3>
+        <div class="flex gap-2">
+          <select id="cfg-batch-select" onchange="renderCfgKithabs()" class="text-xs border border-slate-200 rounded-lg px-3 py-2 font-bold">
+            <option>Batch A</option><option>Batch B</option><option>Batch C</option><option>Batch D</option><option>Batch E</option><option>Batch F</option><option>Batch G</option>
+          </select>
+          <input type="text" id="cfg-new-kithab" placeholder="New Kithab / Subject Name" class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-2" />
+          <button onclick="addKithabToBatch()" class="bg-brand text-white text-xs font-bold px-3 py-2 rounded-lg">Add</button>
+        </div>
+        <div id="cfg-kithab-tags" class="flex flex-wrap gap-1.5"></div>
+      </div>
+
+      <!-- Edit Batch Weekly Timetable -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <h3 class="font-extrabold text-slate-800 text-sm">🗓️ Edit Weekly Timetable (Sunday - Saturday)</h3>
+          <select id="cfg-tt-batch" onchange="renderCfgTimetable()" class="text-xs border border-slate-200 rounded-lg px-3 py-1.5 font-bold text-brand">
+            <option>Batch A</option><option>Batch B</option><option>Batch C</option><option>Batch D</option><option>Batch E</option><option>Batch F</option><option>Batch G</option>
+          </select>
+        </div>
+        <div id="cfg-tt-editor" class="overflow-x-auto text-xs"></div>
+      </div>
+
+      <!-- Edit Daily Routine Items & Points -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold text-slate-800 text-sm">⚙️ Daily Routine Items & Point Rules</h3>
+          <button onclick="addNewDailyItem()" class="bg-teal-50 text-brand text-xs font-bold px-3 py-1.5 rounded-lg border border-teal-200">+ Add New Habit</button>
+        </div>
+        <div id="cfg-daily-items" class="space-y-2 text-xs"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- TIMETABLE & KITHABUKAL MODAL -->
+  <div id="tt-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[85vh] overflow-y-auto p-5 space-y-4">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 id="tt-modal-title" class="font-extrabold text-brand text-base">Weekly Timetable & Kithabukal</h3>
+        <button onclick="document.getElementById('tt-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 font-bold text-lg">✕</button>
+      </div>
+      <div>
+        <div class="text-xs font-bold uppercase text-slate-400 mb-2">Batch Kithabukal / Subjects</div>
+        <div id="tt-modal-kithabs" class="flex flex-wrap gap-1.5"></div>
+      </div>
+      <div id="tt-modal-grid" class="overflow-x-auto"></div>
+    </div>
+  </div>
+
+  <!-- STUDENT DETAIL MODAL (FOR USTADS) -->
+  <div id="st-detail-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[85vh] overflow-y-auto p-5 space-y-3" id="st-detail-body"></div>
+  </div>
+
+  <!-- DIGITAL RECEIPT MODAL (FOR FINANCE CLUB) -->
+  <div id="receipt-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-5 space-y-3">
+      <div id="printable-receipt" class="border-2 border-brand/30 rounded-2xl p-4 space-y-2">
+        <div class="text-center border-b pb-2">
+          <div class="arabic text-xl font-bold text-brand">إشاعة السنة</div>
+          <h4 class="font-extrabold text-sm text-slate-800">Isha-athussunna Dawa Dars</h4>
+          <p class="text-[10px] text-slate-500">Finance Club • Official Digital Receipt</p>
+        </div>
+        <div id="receipt-content" class="text-xs space-y-1.5 pt-1"></div>
+      </div>
+      <div class="flex gap-2 no-print">
+        <button onclick="window.print()" class="flex-1 bg-brand text-white text-xs font-bold py-2.5 rounded-xl">Print Receipt</button>
+        <button onclick="document.getElementById('receipt-modal').classList.add('hidden')" class="px-4 bg-slate-200 text-slate-700 text-xs font-bold py-2.5 rounded-xl">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ================= DEFAULT MASTER DATA =================
+    const DEFAULT_CONFIG = {
+      darsLogo: "",
+      ustads: [
+        { pin: "Ust011", name: "Usthad" },
+        { pin: "Niz011", name: "Nizami Usthad" }
+      ],
+      teams: ["Fatih's Force", "Cordoba Knights", "Samarqand Avengers", "Baghdad Gild"],
+      clubs: [
+        { id: "C01", name: "Spiritual Club", leaderId: "ST001", leaderName: "MUHAMMED RAFI" },
+        { id: "C02", name: "Samajam", leaderId: "ST008", leaderName: "MUHAMMED MIDLAJ.N" },
+        { id: "C03", name: "Cleaning", leaderId: "ST007", leaderName: "MUHAMMED SHAMMAS.N" },
+        { id: "C04", name: "Santwanam", leaderId: "ST010", leaderName: "MUHAMMED RABEEH.MT" },
+        { id: "C05", name: "Kalalayam", leaderId: "ST011", leaderName: "MUHAMMED THWAYYIB" },
+        { id: "C06", name: "Library", leaderId: "ST004", leaderName: "MUHAMMED.K" },
+        { id: "C07", name: "Writers Forum", leaderId: "ST009", leaderName: "MUHAMMED RAEES.TK" },
+        { id: "C08", name: "Language Club", leaderId: "ST006", leaderName: "MUHAMMED FADHAL.P" },
+        { id: "C09", name: "Magazine", leaderId: "ST002", leaderName: "AHAMMED KABEER" },
+        { id: "C10", name: "Finance Club", leaderId: "ST003", leaderName: "LUKHMAN.VK" },
+        { id: "C11", name: "General Convener", leaderId: "ST005", leaderName: "MUHAMMED FASALURAHMAN.P" }
+      ],
+      students: [
+        { id: "ST001", name: "MUHAMMED RAFI", category: "Senior", team: "Fatih's Force", batch: "Batch A" },
+        { id: "ST002", name: "AHAMMED KABEER", category: "Senior", team: "Cordoba Knights", batch: "Batch A" },
+        { id: "ST003", name: "LUKHMAN.VK", category: "Senior", team: "Fatih's Force", batch: "Batch B" },
+        { id: "ST004", name: "MUHAMMED.K", category: "Senior", team: "Samarqand Avengers", batch: "Batch B" },
+        { id: "ST005", name: "MUHAMMED FASALURAHMAN.P", category: "Senior", team: "Baghdad Gild", batch: "Batch B" },
+        { id: "ST006", name: "MUHAMMED FADHAL.P", category: "Junior", team: "Baghdad Gild", batch: "Batch C" },
+        { id: "ST007", name: "MUHAMMED SHAMMAS.N", category: "Junior", team: "Baghdad Gild", batch: "Batch C" },
+        { id: "ST008", name: "MUHAMMED MIDLAJ.N", category: "Junior", team: "Cordoba Knights", batch: "Batch C" },
+        { id: "ST009", name: "MUHAMMED RAEES.TK", category: "Junior", team: "Samarqand Avengers", batch: "Batch C" },
+        { id: "ST010", name: "MUHAMMED RABEEH.MT", category: "Junior", team: "Samarqand Avengers", batch: "Batch D" },
+        { id: "ST011", name: "MUHAMMED THWAYYIB", category: "Junior", team: "Cordoba Knights", batch: "Batch D" },
+        { id: "ST012", name: "MUHAMMED SINAN.NC", category: "Junior", team: "Samarqand Avengers", batch: "Batch D" },
+        { id: "ST013", name: "MUHAMMED MUSHAB", category: "Junior", team: "Fatih's Force", batch: "Batch D" },
+        { id: "ST014", name: "MASHHOORUL HAQ", category: "Junior", team: "Fatih's Force", batch: "Batch D" },
+        { id: "ST015", name: "MUHAMMED RAHOOF.P", category: "Junior", team: "Cordoba Knights", batch: "Batch E" },
+        { id: "ST016", name: "MUHAMMED SHIHAL.T", category: "Sub Junior", team: "Baghdad Gild", batch: "Batch E" },
+        { id: "ST017", name: "MUHAMMED SAEED.VK", category: "Sub Junior", team: "Samarqand Avengers", batch: "Batch E" },
+        { id: "ST018", name: "MUHAMMED HADHI.VP", category: "Sub Junior", team: "Samarqand Avengers", batch: "Batch E" },
+        { id: "ST019", name: "MUHAMMED SINAN.E", category: "Sub Junior", team: "Fatih's Force", batch: "Batch E" },
+        { id: "ST020", name: "MUHAMMED MARZOOQ.VK", category: "Sub Junior", team: "Cordoba Knights", batch: "Batch F" },
+        { id: "ST021", name: "MUHAMMED AZHARUDHEEN.N", category: "Sub Junior", team: "Baghdad Gild", batch: "Batch F" },
+        { id: "ST022", name: "MUHAMMED RAZI", category: "Sub Junior", team: "Baghdad Gild", batch: "Batch F" },
+        { id: "ST023", name: "MUHAMMED MISBAH.P", category: "Sub Junior", team: "Cordoba Knights", batch: "Batch F" },
+        { id: "ST024", name: "MUHHAMMED SINAN.EK", category: "Sub Junior", team: "Cordoba Knights", batch: "Batch F" },
+        { id: "ST025", name: "MUHAMMED RAFEEH", category: "Sub Junior", team: "Baghdad Gild", batch: "Batch F" },
+        { id: "ST026", name: "MUHAMMED NIZAMUDHEEN", category: "Sub Junior", team: "Cordoba Knights", batch: "Batch F" },
+        { id: "ST027", name: "MUHAMMED FUWAD", category: "Sub Junior", team: "Fatih's Force", batch: "Batch G" },
+        { id: "ST028", name: "MUHAMMED KHIDASH", category: "Sub Junior", team: "Cordoba Knights", batch: "Batch G" }
+      ],
+      dailyItems: [
+        { key: "tahajjud", label: "Tahajjud Prayer", type: "bool", points: 10, divisor: 1 },
+        { key: "duha", label: "Duha Prayer", type: "bool", points: 5, divisor: 1 },
+        { key: "quran", label: "Quran Pages Recited", type: "num", points: 1, divisor: 1 },
+        { key: "asmaulBadr", label: "Asmaul Badr", type: "bool", points: 5, divisor: 1 },
+        { key: "asmaulHusna", label: "Asmaul Husna", type: "bool", points: 3, divisor: 1 },
+        { key: "waqia", label: "Surathul Waqia", type: "bool", points: 3, divisor: 1 },
+        { key: "muthalaa", label: "Muthala'a Pages", type: "num", points: 1, divisor: 1 },
+        { key: "wordStudy", label: "Word Study Count", type: "num", points: 2, divisor: 4 },
+        { key: "reading", label: "Extra Reading Pages", type: "num", points: 2, divisor: 4 },
+        { key: "newspaper", label: "Newspaper Reading", type: "bool", points: 2, divisor: 1 },
+        { key: "swalath", label: "Swalath Count", type: "num", points: 1, divisor: 15 },
+        { key: "witr", label: "Witr Prayer", type: "bool", points: 2, divisor: 1 },
+        { key: "haddad", label: "Haddad / Adhkar", type: "bool", points: 2, divisor: 1 },
+        { key: "diary", label: "Daily Diary Writing", type: "bool", points: 5, divisor: 1 },
+        { key: "burdha", label: "Hearty Burdha (Sessions/Count)", type: "num", points: 5, divisor: 1 }
+      ],
+      kithabukal: {
+        "Batch A": ["تفسير", "مشكاة المصابيح", "الألفية", "فتح المعين", "بلاغة", "منطق", "قطر الندى", "Language Class"],
+        "Batch B": ["رياض الصالحين", "الألفية", "فتح المعين", "بلاغة", "منطق", "قطر الندى", "Language Class"],
+        "Batch C": ["رياض الصالحين", "خلاصة", "الألفية", "قطر الندى", "أذكياء", "إرشاد العباد", "Language Class", "Politics", "Sociology", "Economics", "English", "Islamic History", "Arabic"],
+        "Batch D": ["رياض الصالحين", "إرشاد العباد", "خلاصة", "قطر الندى", "Language Class", "Politics", "Sociology", "Economics", "English", "Islamic History", "Arabic", "Accountancy", "Business Studies"],
+        "Batch E": ["فتح القيوم", "عوامل", "خلاصة", "تقويم اللسان", "إرشاد العباد"],
+        "Batch F": ["فتح القيوم", "خلاصة", "تعليم المتعلم", "أجناس", "ميزان"],
+        "Batch G": ["فتح القيوم", "ميزان", "عشرة كتب"]
+      },
+      timetables: {
+        "Batch A": {
+          slots: ["06:00-06:45", "06:50-07:30", "07:30-08:15", "09:30-10:15", "10:15-11:00", "11:00-11:45", "11:45-12:30", "14:15-15:00", "15:00-15:45"],
+          days: {
+            SUN: ["مشكاة", "مطالعة (Research)", "Read & Write", "الألفية", "Note Completion", "قطر الندى", "فتح المعين", "Language Hour", "حفظ"],
+            MON: ["حفظ", "Note Completion", "مطالعة (Research)", "الألفية", "Translation", "قطر الندى", "فتح المعين", "منطق", "مشكاة"],
+            TUE: ["مطالعة (Research)", "Read & Write", "Language Hour", "الألفية", "حفظ", "قطر الندى", "فتح المعين", "منطق", "مشكاة"],
+            WED: ["Note Completion", "مطالعة (Research)", "Read & Write", "الألفية", "حفظ", "مشكاة", "مشكاة", "تفسير", "Translation"],
+            THU: ["حفظ", "مطالعة (Research)", "Language Hour", "الألفية", "قطر الندى", "Read & Write", "مشكاة", "Translation", "نهج البلاغة"],
+            SAT: ["L-View", "حفظ", "Translation", "الألفية", "Read & Write", "مطالعة (Research)", "فتح المعين", "بلاغة", "Language Hour"]
+          }
+        },
+        "Batch B": {
+          slots: ["06:00-06:45", "06:50-07:30", "07:30-08:15", "09:30-10:15", "10:15-11:00", "11:00-11:45", "11:45-12:30", "14:15-15:00", "15:00-15:45"],
+          days: {
+            SUN: ["رياض الصالحين", "مطالعة (Research)", "Reading Writing", "الفقه", "Note Completion", "قطر الندى", "فتح المعين", "Language hr", "حفظ"],
+            MON: ["حفظ", "Note Completion", "مطالعة (Research)", "الفقه", "Translation", "قطر الندى", "فتح المعين", "منطق", "English"],
+            TUE: ["مطالعة (Research)", "Reading Writing", "Language hr", "الفقه", "حفظ", "قطر الندى", "فتح المعين", "منطق", "Translation"],
+            WED: ["Note Completion", "مطالعة (Research)", "Reading Writing", "الفقه", "قطر الندى", "حفظ", "فتح المعين", "بلاغة", "Translation"],
+            THU: ["حفظ", "مطالعة (Research)", "Language hr", "الفقه", "قطر الندى", "Reading Writing", "رياض الصالحين", "Translation", "نهج البلاغة"],
+            SAT: ["L-View", "حفظ", "Translation", "الفقه", "Reading Writing", "مطالعة (Research)", "فتح المعين", "بلاغة", "Language hr"]
+          }
+        },
+        "Batch C": {
+          slots: ["06:00-06:45", "06:50-07:30", "07:30-08:15", "09:00-09:45", "10:15-11:00", "11:00-11:45", "11:45-12:30", "14:15-15:00", "15:00-15:45"],
+          days: {
+            SUN: ["رياض الصالحين", "+2 Revision", "+2 Eduport Class", "Bath / Language", "خلاصة", "قطر الندى", "Note Completing", "Translation", "Hifz"],
+            MON: ["+2 Eduport", "مطالعة (Research)", "Reading-Writing", "Bath", "خلاصة", "قطر الندى", "إرشاد العباد", "+2 Eduport", "English"],
+            TUE: ["Note Completing", "+2 Eduport", "Reading-Writing", "Bath", "خلاصة", "قطر الندى", "إرشاد العباد", "أذكياء", "Language Learning"],
+            WED: ["+2 Eduport", "Hifz", "+2 Eduport", "Bath", "قطر الندى", "خلاصة", "Reading-Writing", "مطالعة (Research)", "Translation"],
+            THU: ["Hifz", "+2 Eduport", "Reading-Writing", "+2 Eduport", "Bath", "قطر الندى", "مطالعة (Research)", "Language Learning", "Translation"],
+            SAT: ["رياض الصالحين (L-View)", "Language Learning", "+2 Eduport", "Reading-Writing", "Bath", "قطر الندى", "+2 Eduport", "+2 خلاصة", "English"]
+          }
+        },
+        "Batch D": {
+          slots: ["06:00-06:45", "06:50-07:30", "07:30-08:15", "09:30-10:15", "10:15-11:00", "11:00-11:45", "11:45-12:30", "14:15-15:00", "15:00-15:45"],
+          days: {
+            SUN: ["رياض الصالحين", "+2 Revision", "Note Completion", "+2 Eduport Class", "قطر الندى", "خلاصة", "Language Learning", "حفظ", "Translation"],
+            MON: ["مطالعة (Research)", "+2 Eduport Class", "Reading & Writing", "+2 Eduport Class", "قطر الندى", "خلاصة", "إرشاد العباد", "Language Learning", "English"],
+            TUE: ["+2 Eduport Class", "Note Completion", "+2 Eduport", "مطالعة (Research)", "قطر الندى", "خلاصة", "إرشاد العباد", "Reading & Writing", "Language Learning"],
+            WED: ["حفظ", "+2 Eduport", "Note Completion", "+2 Eduport", "خلاصة", "قطر الندى", "Translation", "مطالعة (Research)", "Reading & Writing"],
+            THU: ["+2 Eduport", "حفظ", "+2 Eduport", "مطالعة (Research)", "Translation", "قطر الندى", "Reading & Writing", "Language Learning", "Translation"],
+            SAT: ["L-view", "+2 Eduport", "Language Learning", "+2 Eduport", "خلاصة", "قطر الندى / R&W", "مطالعة (Research)", "Translation", "Note Completion"]
+          }
+        },
+        "Batch E": {
+          slots: ["06:00-06:45", "06:50-07:30", "19:30-20:15", "20:15-21:00"],
+          days: {
+            SUN: ["فتح القيوم", "عوامل", "خلاصة", "إرشاد العباد"],
+            MON: ["فتح القيوم", "عوامل", "تقويم اللسان", "حفظ"],
+            TUE: ["فتح القيوم", "خلاصة", "عوامل", "Note Completion"],
+            WED: ["فتح القيوم", "إرشاد العباد", "تقويم اللسان", "حفظ"],
+            THU: ["فتح القيوم", "عوامل", "خلاصة", "مذاكرة"],
+            SAT: ["فتح القيوم", "تقويم اللسان", "إرشاد العباد", "Note Completion"]
+          }
+        },
+        "Batch F": {
+          slots: ["06:00-06:45", "06:50-07:30", "19:30-20:15", "20:15-21:00"],
+          days: {
+            SUN: ["فتح القيوم", "خلاصة", "تعليم المتعلم", "ميزان"],
+            MON: ["فتح القيوم", "أجناس", "خلاصة", "حفظ"],
+            TUE: ["فتح القيوم", "ميزان", "تعليم المتعلم", "Note Completion"],
+            WED: ["فتح القيوم", "أجناس", "خلاصة", "حفظ"],
+            THU: ["فتح القيوم", "ميزان", "تعليم المتعلم", "مذاكرة"],
+            SAT: ["فتح القيوم", "أجناس", "خلاصة", "Note Completion"]
+          }
+        },
+        "Batch G": {
+          slots: ["06:00-06:45", "06:50-07:30", "19:30-20:15", "20:15-21:00"],
+          days: {
+            SUN: ["فتح القيوم", "ميزان", "عشرة كتب", "حفظ"],
+            MON: ["فتح القيوم", "ميزان", "عشرة كتب", "Note Completion"],
+            TUE: ["فتح القيوم", "ميزان", "عشرة كتب", "حفظ"],
+            WED: ["فتح القيوم", "ميزان", "عشرة كتب", "مذاكرة"],
+            THU: ["فتح القيوم", "ميزان", "عشرة كتب", "حفظ"],
+            SAT: ["فتح القيوم", "ميزان", "عشرة كتب", "Note Completion"]
+          }
+        }
+      },
+      profiles: {}
+    };
+
+    // ================= APP STATE =================
+    let APP = {
+      apiUrl: localStorage.getItem('icon_api_url') || '',
+      config: JSON.parse(localStorage.getItem('icon_config')) || DEFAULT_CONFIG,
+      dailyLogs: JSON.parse(localStorage.getItem('icon_daily')) || [],
+      competitions: JSON.parse(localStorage.getItem('icon_comp')) || [],
+      clubPoints: JSON.parse(localStorage.getItem('icon_club')) || [],
+      projects: JSON.parse(localStorage.getItem('icon_proj')) || [],
+      evaluations: JSON.parse(localStorage.getItem('icon_eval')) || [],
+      leaves: JSON.parse(localStorage.getItem('icon_leaves')) || [],
+      notices: JSON.parse(localStorage.getItem('icon_notices')) || [],
+      badges: JSON.parse(localStorage.getItem('icon_badges')) || [],
+      books: JSON.parse(localStorage.getItem('icon_books')) || [],
+      finance: JSON.parse(localStorage.getItem('icon_finance')) || [],
+      user: JSON.parse(sessionStorage.getItem('icon_user')) || null,
+      lbCat: 'All',
+      lbType: 'daily'
+    };
+
+    // Ensure 11 clubs & Junior fix for ST014/ST015 if upgrading from older local storage
+    (function migrateConfig() {
+      if (!APP.config.clubs) APP.config.clubs = DEFAULT_CONFIG.clubs;
+      if (!APP.config.clubs.some(c => c.name === "Finance Club")) {
+        APP.config.clubs.push({ id: "C10", name: "Finance Club", leaderId: "ST003", leaderName: "LUKHMAN.VK" });
+      }
+      if (!APP.config.clubs.some(c => c.name === "General Convener")) {
+        APP.config.clubs.push({ id: "C11", name: "General Convener", leaderId: "ST005", leaderName: "MUHAMMED FASALURAHMAN.P" });
+      }
+      ["ST014", "ST015"].forEach(id => {
+        const st = APP.config.students.find(s => s.id === id);
+        if (st) st.category = "Junior";
+      });
+      ["Batch E", "Batch F", "Batch G"].forEach(b => {
+        if (!APP.config.timetables[b]) APP.config.timetables[b] = DEFAULT_CONFIG.timetables[b];
+      });
+    })();
+
+    function persistLocal() {
+      localStorage.setItem('icon_config', JSON.stringify(APP.config));
+      localStorage.setItem('icon_daily', JSON.stringify(APP.dailyLogs));
+      localStorage.setItem('icon_comp', JSON.stringify(APP.competitions));
+      localStorage.setItem('icon_club', JSON.stringify(APP.clubPoints));
+      localStorage.setItem('icon_proj', JSON.stringify(APP.projects));
+      localStorage.setItem('icon_eval', JSON.stringify(APP.evaluations));
+      localStorage.setItem('icon_leaves', JSON.stringify(APP.leaves));
+      localStorage.setItem('icon_notices', JSON.stringify(APP.notices));
+      localStorage.setItem('icon_badges', JSON.stringify(APP.badges));
+      localStorage.setItem('icon_books', JSON.stringify(APP.books));
+      localStorage.setItem('icon_finance', JSON.stringify(APP.finance));
+    }
+
+    async function apiCall(payload) {
+      if (!APP.apiUrl) return;
+      setSyncStatus('Syncing...', 'amber');
+      try {
+        await fetch(APP.apiUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        setSyncStatus('Synced', 'emerald');
+      } catch (e) {
+        setSyncStatus('Offline', 'red');
+      }
+    }
+
+    async function syncFromCloud(notify = false) {
+      if (!APP.apiUrl) return;
+      setSyncStatus('Loading...', 'amber');
+      try {
+        const res = await fetch(APP.apiUrl + '?action=getAll');
+        const json = await res.json();
+        if (json.status === 'success' && json.data) {
+          if (json.data.config) APP.config = json.data.config;
+          APP.dailyLogs = json.data.dailyLogs || [];
+          APP.competitions = json.data.competitions || [];
+          APP.clubPoints = json.data.clubPoints || [];
+          APP.projects = json.data.projects || [];
+          APP.evaluations = json.data.evaluations || [];
+          APP.leaves = json.data.leaves || [];
+          APP.notices = json.data.notices || [];
+          APP.badges = json.data.badges || [];
+          APP.books = json.data.books || [];
+          APP.finance = json.data.finance || APP.finance || [];
+          persistLocal();
+          applyBranding();
+          if (APP.user) renderCurrentRole();
+          setSyncStatus('Live', 'emerald');
+          if (notify) alert('All Dars data synced from Google Sheet!');
+        }
+      } catch (e) {
+        setSyncStatus('Local', 'amber');
+      }
+    }
+
+    function setSyncStatus(text, color) {
+      const b = document.getElementById('sync-badge');
+      b.textContent = text;
+      b.className = `text-[10px] px-2 py-0.5 rounded-full bg-${color}-500/20 text-${color}-200 border border-${color}-400/30`;
+    }
+
+    function applyBranding() {
+      if (APP.config.darsLogo) {
+        const imgTag = `<img src="${APP.config.darsLogo}" class="w-full h-full object-contain rounded-lg" />`;
+        document.getElementById('header-logo').innerHTML = imgTag;
+        document.getElementById('login-logo-box').innerHTML = imgTag;
+      }
+    }
+
+    // ================= 12-HOUR TIME FORMATTER =================
+    function format12Hour(hhmm) {
+      if (!hhmm || !hhmm.includes(':')) return hhmm;
+      let [h, m] = hhmm.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${h}:${String(m).padStart(2, '0')} ${ampm}`;
+    }
+
+    function formatSlot12Hour(slotStr) {
+      if (!slotStr || !slotStr.includes('-')) return slotStr;
+      const [s, e] = slotStr.split('-');
+      return `${format12Hour(s)} - ${format12Hour(e)}`;
+    }
+
+    // ================= AUTHENTICATION =================
+    function handleLogin(e) {
+      e.preventDefault();
+      const pin = document.getElementById('login-pin').value.trim();
+      const ustad = APP.config.ustads.find(u => u.pin.toLowerCase() === pin.toLowerCase());
+      if (ustad) {
+        APP.user = { role: 'ustad', data: ustad };
+        sessionStorage.setItem('icon_user', JSON.stringify(APP.user));
+        renderCurrentRole();
+        return;
+      }
+      const student = APP.config.students.find(s => s.id.toLowerCase() === pin.toLowerCase());
+      if (student) {
+        APP.user = { role: 'student', data: student };
+        sessionStorage.setItem('icon_user', JSON.stringify(APP.user));
+        renderCurrentRole();
+        return;
+      }
+      document.getElementById('login-error').classList.remove('hidden');
+    }
+
+    function logout() {
+      sessionStorage.removeItem('icon_user');
+      APP.user = null;
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('student-app').classList.add('hidden');
+      document.getElementById('ustad-app').classList.add('hidden');
+      document.getElementById('header-actions').classList.add('hidden');
+      document.getElementById('login-pin').value = '';
+    }
+
+    function renderCurrentRole() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('header-actions').classList.remove('hidden');
+      if (APP.user.role === 'student') {
+        APP.user.data = APP.config.students.find(s => s.id === APP.user.data.id) || APP.user.data;
+        document.getElementById('ustad-app').classList.add('hidden');
+        document.getElementById('student-app').classList.remove('hidden');
+        initStudentDashboard();
+      } else {
+        document.getElementById('student-app').classList.add('hidden');
+        document.getElementById('ustad-app').classList.remove('hidden');
+        initUstadDashboard();
+      }
+    }
+
+    // ================= STUDENT DASHBOARD =================
+    function initStudentDashboard() {
+      const st = APP.user.data;
+      document.getElementById('st-batch-badge').textContent = `${st.batch} • ${st.category} • ${st.team}`;
+      
+      if (APP.notices.length > 0) {
+        const latest = APP.notices[APP.notices.length - 1];
+        document.getElementById('student-notice-banner').classList.remove('hidden');
+        document.getElementById('notice-banner-title').textContent = latest.Title;
+        document.getElementById('notice-banner-msg').textContent = latest.Message;
+        document.getElementById('notice-banner-date').textContent = latest.Date;
+        document.getElementById('notice-banner-by').textContent = latest.PostedBy ? `Posted by: ${latest.PostedBy}` : '';
+      }
+
+      updateLiveSchedule();
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('daily-date').value = today;
+      renderDailyFormFields();
+      loadDailyForDate();
+
+      renderStudentProjectsSection();
+      renderLeaderboards();
+
+      const myClubs = APP.config.clubs.filter(c => c.leaderId === st.id);
+      if (myClubs.length > 0) {
+        const primaryClub = myClubs[0];
+        document.getElementById('club-leader-panel').classList.remove('hidden');
+        document.getElementById('leader-club-title').textContent = myClubs.map(c => `${c.name} (${c.id})`).join(' & ');
+        document.getElementById('cl-student').innerHTML = APP.config.students.map(s => `<option value="${s.id}">${s.id} - ${s.name}</option>`).join('');
+
+        const isFinanceLeader = myClubs.some(c => c.name.toLowerCase().includes('finance'));
+        document.getElementById('finance-club-desk').classList.toggle('hidden', !isFinanceLeader);
+        if (isFinanceLeader) renderFinanceDesk();
+      } else {
+        document.getElementById('club-leader-panel').classList.add('hidden');
+      }
+
+      renderStudentActivities();
+      renderStudentProfile();
+    }
+
+    function updateLiveSchedule() {
+      const st = APP.user.data;
+      const now = new Date();
+      document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+      const tt = APP.config.timetables[st.batch];
+      if (!tt) {
+        document.getElementById('now-session').textContent = "Flexible Dars Session";
+        document.getElementById('next-session').textContent = "Check Kithabukal List";
+        return;
+      }
+      const dayKeys = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      const day = dayKeys[now.getDay()];
+      if (day === "FRI" || !tt.days[day]) {
+        document.getElementById('now-session').textContent = "Jumu'ah / Weekly Holiday";
+        document.getElementById('next-session').textContent = "Self Study & Adhkar";
+        return;
+      }
+      const curMin = now.getHours() * 60 + now.getMinutes();
+      let nowText = "General Routine / Revision";
+      let nextText = `${tt.days[day][0]} (${format12Hour(tt.slots[0].split('-')[0])})`;
+      for (let i = 0; i < tt.slots.length; i++) {
+        const [startStr, endStr] = tt.slots[i].split('-');
+        const [sh, sm] = startStr.split(':').map(Number);
+        const [eh, em] = endStr.split(':').map(Number);
+        const sMin = sh * 60 + sm, eMin = eh * 60 + em;
+        if (curMin >= sMin && curMin <= eMin) {
+          nowText = `${tt.days[day][i]} (${formatSlot12Hour(tt.slots[i])})`;
+          nextText = tt.days[day][i + 1] ? `${tt.days[day][i + 1]} (${format12Hour(tt.slots[i + 1].split('-')[0])})` : "Evening Routine";
+          break;
+        } else if (curMin < sMin) {
+          nextText = `${tt.days[day][i]} (${format12Hour(startStr)})`;
+          break;
+        }
+      }
+      document.getElementById('now-session').textContent = nowText;
+      document.getElementById('next-session').textContent = nextText;
+    }
+
+    function openTimetableModal() {
+      const st = APP.user.data;
+      document.getElementById('tt-modal-title').textContent = `${st.batch} — Weekly Timetable & Kithabukal`;
+      const kithabs = APP.config.kithabukal[st.batch] || [];
+      document.getElementById('tt-modal-kithabs').innerHTML = kithabs.map(k => `<span class="arabic px-3 py-1 rounded-full bg-teal-50 text-brand border border-teal-200 text-xs font-bold">${k}</span>`).join('');
+      const tt = APP.config.timetables[st.batch];
+      if (!tt) {
+        document.getElementById('tt-modal-grid').innerHTML = `<p class="text-xs text-slate-500 py-4">No timetable configured for ${st.batch}.</p>`;
+      } else {
+        let html = `<table class="w-full text-[11px] border-collapse border border-slate-200"><thead><tr class="bg-brand text-white"><th class="p-1.5 border">DAY</th>${tt.slots.map(s => `<th class="p-1.5 border whitespace-nowrap">${formatSlot12Hour(s)}</th>`).join('')}</tr></thead><tbody>`;
+        Object.keys(tt.days).forEach(d => {
+          html += `<tr><td class="p-1.5 border font-bold bg-slate-50">${d}</td>${tt.days[d].map(c => `<td class="p-1.5 border arabic text-center">${c}</td>`).join('')}</tr>`;
+        });
+        html += `</tbody></table>`;
+        document.getElementById('tt-modal-grid').innerHTML = html;
+      }
+      document.getElementById('tt-modal').classList.remove('hidden');
+    }
+
+    function renderDailyFormFields() {
+      const st = APP.user.data;
+      const kithabs = APP.config.kithabukal[st.batch] || [];
+      document.getElementById('sabq-kithab-list').innerHTML = kithabs.map(k => `
+        <label class="cursor-pointer">
+          <input type="checkbox" name="sabq_kithab" value="${k}" class="peer hidden" />
+          <span class="arabic inline-block px-3 py-1 rounded-full text-xs font-bold border border-slate-200 bg-white text-slate-600 peer-checked:bg-brand peer-checked:text-white peer-checked:border-brand transition">${k}</span>
+        </label>
+      `).join('');
+
+      document.getElementById('daily-items-container').innerHTML = APP.config.dailyItems.map(item => {
+        if (item.type === 'bool') {
+          return `
+            <label class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200/70 cursor-pointer">
+              <div>
+                <div class="text-sm font-bold text-slate-700">${item.label}</div>
+                <div class="text-[10px] text-emerald-700 font-semibold">+${item.points} pts</div>
+              </div>
+              <input type="checkbox" id="di-${item.key}" onchange="recalcDailyPoints()" class="w-5 h-5 accent-[#0f3d3e] rounded" />
+            </label>
+          `;
+        } else {
+          return `
+            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+              <div>
+                <div class="text-sm font-bold text-slate-700">${item.label}</div>
+                <div class="text-[10px] text-emerald-700 font-semibold">+${item.points} pts per ${item.divisor}</div>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="stepNum('di-${item.key}', -1)" class="w-8 h-8 rounded-lg bg-white border border-slate-200 font-bold text-slate-700">-</button>
+                <input type="number" min="0" value="0" id="di-${item.key}" oninput="recalcDailyPoints()" class="w-14 text-center font-bold text-sm bg-white border border-slate-200 rounded-lg py-1" />
+                <button type="button" onclick="stepNum('di-${item.key}', 1)" class="w-8 h-8 rounded-lg bg-white border border-slate-200 font-bold text-slate-700">+</button>
+              </div>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    function stepNum(id, delta) {
+      const el = document.getElementById(id);
+      el.value = Math.max(0, (parseInt(el.value) || 0) + delta);
+      recalcDailyPoints();
+    }
+
+    function recalcDailyPoints() {
+      let total = 0;
+      APP.config.dailyItems.forEach(item => {
+        const el = document.getElementById(`di-${item.key}`);
+        if (!el) return;
+        if (item.type === 'bool') {
+          if (el.checked) total += Number(item.points);
+        } else {
+          const val = Number(el.value) || 0;
+          total += Math.floor(val / Number(item.divisor || 1)) * Number(item.points);
+        }
+      });
+      document.getElementById('daily-live-pts').textContent = total;
+      return total;
+    }
+
+    function loadDailyForDate() {
+      const st = APP.user.data;
+      const date = document.getElementById('daily-date').value;
+      const existing = APP.dailyLogs.find(l => l.StudentID === st.id && String(l.Date).startsWith(date));
+      document.getElementById('chk-school').checked = existing ? (existing.School === 'Yes' || existing.School === true) : false;
+      const sabqArr = existing && existing.SabqList ? String(existing.SabqList).split(', ') : [];
+      document.querySelectorAll('input[name="sabq_kithab"]').forEach(cb => cb.checked = sabqArr.includes(cb.value));
+
+      let details = {};
+      if (existing && existing.DetailsJSON) {
+        try { details = JSON.parse(existing.DetailsJSON); } catch(e) {}
+      }
+      APP.config.dailyItems.forEach(item => {
+        const el = document.getElementById(`di-${item.key}`);
+        if (!el) return;
+        if (item.type === 'bool') el.checked = !!details[item.key];
+        else el.value = details[item.key] || 0;
+      });
+      recalcDailyPoints();
+    }
+
+    function submitDailyRoutine(e) {
+      e.preventDefault();
+      const st = APP.user.data;
+      const date = document.getElementById('daily-date').value;
+      const pts = recalcDailyPoints();
+      const sabqList = Array.from(document.querySelectorAll('input[name="sabq_kithab"]:checked')).map(c => c.value).join(', ');
+      const school = document.getElementById('chk-school').checked ? 'Yes' : 'No';
+      const details = {};
+      APP.config.dailyItems.forEach(item => {
+        const el = document.getElementById(`di-${item.key}`);
+        details[item.key] = item.type === 'bool' ? el.checked : (Number(el.value) || 0);
+      });
+
+      const id = `${st.id}_${date}`;
+      const row = {
+        ID: id,
+        StudentID: st.id,
+        Date: date,
+        Points: pts,
+        SabqList: sabqList,
+        School: school,
+        DetailsJSON: JSON.stringify(details),
+        Timestamp: new Date().toISOString()
+      };
+      const idx = APP.dailyLogs.findIndex(l => l.ID === id);
+      if (idx >= 0) APP.dailyLogs[idx] = row; else APP.dailyLogs.push(row);
+      persistLocal();
+      apiCall({ action: 'saveDaily', row });
+      renderLeaderboards();
+      renderStudentProfile();
+      alert(`Saved! You earned ${pts} points for ${date}.`);
+    }
+
+    // ================= STUDENT PROJECTS (ASSIGNED BY, SUBMIT TICKET, APPROVED BY) =================
+    function renderStudentProjectsSection() {
+      const st = APP.user.data;
+      const myProjects = APP.projects.filter(p => p.TargetBatch === 'ALL' || p.TargetBatch === st.category || p.TargetBatch === st.batch);
+      document.getElementById('st-projects-section').innerHTML = myProjects.map(p => {
+        let done = [];
+        let subs = {};
+        let approvals = {};
+        try { done = JSON.parse(p.CompletedByJSON || '[]'); } catch(e) {}
+        try { subs = JSON.parse(p.SubmissionsJSON || '{}'); } catch(e) {}
+        try { approvals = JSON.parse(p.ApprovalsJSON || '{}'); } catch(e) {}
+
+        const isApproved = done.includes(st.id);
+        const mySub = subs[st.id];
+        const approvedBy = approvals[st.id] || p.CreatedBy || 'Ustad';
+
+        if (isApproved) {
+          return `
+            <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-extrabold uppercase bg-emerald-600 text-white px-2 py-0.5 rounded">✓ Completed & Approved</span>
+                <span class="font-black text-emerald-700 text-xs">+${p.Points} pts Earned</span>
+              </div>
+              <h4 class="font-bold text-emerald-950 text-sm">${p.Title}</h4>
+              <p class="text-[11px] text-emerald-800">Assigned by: <b>${p.CreatedBy || 'Ustad'}</b> • Verified & Ticked by: <b>${approvedBy}</b></p>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="bg-rose-50 border border-rose-200 rounded-2xl p-3.5 space-y-2">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <span class="text-[10px] font-extrabold uppercase bg-rose-600 text-white px-2 py-0.5 rounded">${mySub ? 'Submitted • Awaiting Ustad Tick' : 'Pending Project'}</span>
+                <h4 class="font-bold text-rose-950 text-sm mt-1">${p.Title}</h4>
+                <p class="text-xs text-rose-800">${p.Description || ''}</p>
+                <p class="text-[11px] text-rose-700 mt-0.5">Assigned by: <b>${p.CreatedBy || 'Ustad'}</b> • Due: <b>${p.DueDate}</b></p>
+              </div>
+              <div class="text-right font-black text-rose-700 text-sm shrink-0">+${p.Points} pts</div>
+            </div>
+            <div class="flex gap-2 pt-1">
+              <input type="text" id="sub-note-${p.ID}" value="${mySub ? mySub.note : ''}" placeholder="Enter completion note / summary to submit..." class="flex-1 text-xs bg-white border border-rose-200 rounded-lg px-2.5 py-1.5 outline-none" />
+              <button onclick="submitStudentProject('${p.ID}')" class="bg-brand text-white text-xs font-bold px-3 py-1.5 rounded-lg shrink-0">${mySub ? 'Update' : 'Submit'}</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function submitStudentProject(projId) {
+      const st = APP.user.data;
+      const proj = APP.projects.find(p => p.ID === projId);
+      if (!proj) return;
+      const note = document.getElementById(`sub-note-${projId}`).value.trim() || 'Completed';
+      let subs = {};
+      try { subs = JSON.parse(proj.SubmissionsJSON || '{}'); } catch(e) {}
+      subs[st.id] = { note, date: new Date().toLocaleDateString() };
+      proj.SubmissionsJSON = JSON.stringify(subs);
+      persistLocal();
+      apiCall({ action: 'saveProject', row: proj });
+      renderStudentProjectsSection();
+      alert('Project submitted! Waiting for Ustad verification tick.');
+    }
+
+    // ================= 6 MONTHLY AUTO-AWARDS & LEADERBOARDS =================
+    function calculate6MonthlyAwards() {
+      const curMonth = new Date().toISOString().slice(0, 7);
+      const stats = APP.config.students.map(st => {
+        const logs = APP.dailyLogs.filter(l => l.StudentID === st.id && String(l.Date).startsWith(curMonth));
+        let spiritual = 0, scholar = 0, reader = 0, consistency = 0;
+        const habitKeys = ["tahajjud", "duha", "asmaulBadr", "asmaulHusna", "waqia", "newspaper", "witr", "haddad", "diary"];
+        logs.forEach(l => {
+          let d = {};
+          try { d = JSON.parse(l.DetailsJSON || '{}'); } catch(e) {}
+          spiritual += (Number(d.quran) || 0) + Math.floor((Number(d.swalath) || 0) / 15);
+          scholar += (Number(d.muthalaa) || 0) + (Number(d.wordStudy) || 0);
+          reader += (Number(d.reading) || 0);
+          habitKeys.forEach(k => { if (d[k]) consistency += 1; });
+        });
+        const evalPts = APP.evaluations.filter(e => e.StudentID === st.id && String(e.Date).startsWith(curMonth)).reduce((s, r) => s + (Number(r.Points) || 0), 0);
+        const sc = getStudentScores(st.id);
+        const grandTotal = sc.daily + sc.comp + sc.club + sc.acad;
+        return { student: st, spiritual, scholar, reader, consistency, conduct: evalPts, grandTotal };
+      });
+
+      const topBy = (key) => [...stats].sort((a, b) => b[key] - a[key])[0];
+      return [
+        { icon: "🕌", title: "Top Spiritual Award", desc: "Quran + Swalath", winner: topBy('spiritual'), valKey: 'spiritual' },
+        { icon: "📖", title: "Scholar of the Month", desc: "Muthala'a + Word Study", winner: topBy('scholar'), valKey: 'scholar' },
+        { icon: "📚", title: "Star Reader", desc: "Extra Reading Pages", winner: topBy('reader'), valKey: 'reader' },
+        { icon: "⏰", title: "Consistency Champion", desc: "9 Daily Adhkar & Habits", winner: topBy('consistency'), valKey: 'consistency' },
+        { icon: "🌟", title: "Best Conduct", desc: "Behaviour & Ustad Eval", winner: topBy('conduct'), valKey: 'conduct' },
+        { icon: "👑", title: "Student of the Month", desc: "Overall Grand Total", winner: topBy('grandTotal'), valKey: 'grandTotal' }
+      ];
+    }
+
+    function getStudentScores(studentId) {
+      const curMonth = new Date().toISOString().slice(0, 7);
+      const daily = APP.dailyLogs
+        .filter(l => l.StudentID === studentId && String(l.Date).startsWith(curMonth))
+        .reduce((s, r) => s + (Number(r.Points) || 0), 0);
+      const comp = APP.competitions
+        .filter(c => c.StudentID === studentId)
+        .reduce((s, r) => s + (Number(r.Points) || 0), 0);
+      const club = APP.clubPoints
+        .filter(c => c.StudentID === studentId)
+        .reduce((s, r) => s + (Number(r.Points) || 0), 0);
+      const evalPts = APP.evaluations
+        .filter(e => e.StudentID === studentId)
+        .reduce((s, r) => s + (Number(r.Points) || 0), 0);
+      const projPts = APP.projects.reduce((s, p) => {
+        let done = [];
+        try { done = JSON.parse(p.CompletedByJSON || '[]'); } catch(e) {}
+        return done.includes(studentId) ? s + (Number(p.Points) || 0) : s;
+      }, 0);
+      return { daily, comp, club, acad: evalPts + projPts };
+    }
+
+    function setLbCat(cat) {
+      APP.lbCat = cat;
+      document.querySelectorAll('.lb-cat-btn').forEach(b => {
+        b.className = b.dataset.cat === cat ? 'lb-cat-btn px-2.5 py-1 rounded-md bg-white shadow-sm text-brand' : 'lb-cat-btn px-2.5 py-1 rounded-md text-slate-600';
+      });
+      renderLeaderboards();
+    }
+
+    function setLbType(type) {
+      APP.lbType = type;
+      document.querySelectorAll('.lb-type-btn').forEach(b => {
+        b.className = b.dataset.type === type ? 'lb-type-btn text-xs font-bold px-3 py-1.5 rounded-full bg-brand text-white' : 'lb-type-btn text-xs font-bold px-3 py-1.5 rounded-full bg-slate-100 text-slate-600';
+      });
+      renderLeaderboards();
+    }
+
+    function renderLeaderboards() {
+      const allRanked = APP.config.students.map(s => ({ ...s, scores: getStudentScores(s.id) }));
+      const awards = calculate6MonthlyAwards();
+      document.getElementById('monthly-awards-grid').innerHTML = awards.map(a => `
+        <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-2.5 flex items-center justify-between">
+          <div>
+            <div class="font-extrabold text-slate-800">${a.icon} ${a.title}</div>
+            <div class="text-[10px] text-slate-500">${a.desc}</div>
+            <div class="text-xs font-bold text-brand mt-0.5">${a.winner && a.winner[a.valKey] > 0 ? a.winner.student.name : 'In Progress...'}</div>
+          </div>
+          <span class="text-xs font-black text-amber-700 bg-amber-100/70 px-2 py-1 rounded-lg">${a.winner ? a.winner[a.valKey] : 0}</span>
+        </div>
+      `).join('');
+
+      if (APP.user && APP.user.role === 'student') {
+        const me = allRanked.find(s => s.id === APP.user.data.id);
+        const dailySorted = [...allRanked].sort((a, b) => b.scores.daily - a.scores.daily);
+        const myRank = dailySorted.findIndex(s => s.id === me.id) + 1;
+        document.getElementById('my-stat-daily').textContent = me.scores.daily;
+        document.getElementById('my-rank-daily').textContent = `Rank #${myRank} Overall`;
+        document.getElementById('my-stat-comp').textContent = me.scores.comp;
+        document.getElementById('my-stat-club').textContent = me.scores.club;
+        document.getElementById('my-stat-acad').textContent = me.scores.acad;
+
+        const myComps = APP.competitions.filter(c => c.StudentID === me.id);
+        document.getElementById('my-comp-history').innerHTML = myComps.length ? myComps.map(c => `
+          <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl">
+            <div><span class="font-bold text-slate-800">${c.Title}</span> <span class="text-slate-500">(${c.Position})</span></div>
+            <span class="font-black text-amber-600">+${c.Points} pts</span>
+          </div>
+        `).join('') : `<p class="text-slate-400">No competition results recorded yet.</p>`;
+      }
+
+      const teamTotals = APP.config.teams.map(t => {
+        const members = allRanked.filter(s => s.team === t);
+        const indComp = members.reduce((sum, s) => sum + s.scores.comp, 0);
+        const directTeamComp = APP.competitions
+          .filter(c => c.StudentID === `TEAM:${t}`)
+          .reduce((sum, r) => sum + (Number(r.Points) || 0), 0);
+        const compPts = indComp + directTeamComp;
+        const clubPts = members.reduce((sum, s) => sum + s.scores.club, 0);
+        const acadPts = members.reduce((sum, s) => sum + s.scores.acad, 0);
+        const pts = compPts + clubPts + acadPts;
+        return { team: t, pts, compPts, clubPts, acadPts };
+      }).sort((a, b) => b.pts - a.pts);
+
+      document.getElementById('team-standings-list').innerHTML = teamTotals.map((t, i) => `
+        <div class="flex items-center justify-between p-2.5 rounded-xl ${i === 0 ? 'bg-amber-50 border border-amber-200' : 'bg-slate-50'}">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-full bg-brand text-white text-xs font-extrabold flex items-center justify-center">${i + 1}</span>
+            <div>
+              <div class="font-bold text-xs text-slate-800">${t.team}</div>
+              <div class="text-[10px] text-slate-500">Comp: <b>${t.compPts}</b> • Club: <b>${t.clubPts}</b> • Acad/Proj: <b>${t.acadPts}</b></div>
+            </div>
+          </div>
+          <span class="font-black text-sm text-brand">${t.pts} pts</span>
+        </div>
+      `).join('');
+
+      const filtered = allRanked
+        .filter(s => APP.lbCat === 'All' || s.category.toLowerCase() === APP.lbCat.toLowerCase())
+        .sort((a, b) => b.scores[APP.lbType] - a.scores[APP.lbType]);
+
+      document.getElementById('leaderboard-rows').innerHTML = filtered.map((s, i) => `
+        <div class="py-2.5 flex items-center justify-between text-xs">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 text-center font-extrabold ${i < 3 ? 'text-amber-600' : 'text-slate-400'}">#${i + 1}</span>
+            <div>
+              <div class="font-bold text-slate-800">${s.name}</div>
+              <div class="text-[10px] text-slate-400">${s.category} • ${s.team}</div>
+            </div>
+          </div>
+          <div class="font-black text-brand text-sm">${s.scores[APP.lbType]} pts</div>
+        </div>
+      `).join('');
+    }
+
+    // ================= CLUBS, FINANCE TREASURY, BOOKS & LEAVES =================
+    function submitClubPoints(e) {
+      e.preventDefault();
+      const st = APP.user.data;
+      const myClub = APP.config.clubs.find(c => c.leaderId === st.id);
+      const row = {
+        ID: 'CL_' + Date.now(),
+        ClubID: myClub.id,
+        EventName: document.getElementById('cl-event').value,
+        Date: new Date().toISOString().split('T')[0],
+        StudentID: document.getElementById('cl-student').value,
+        Points: Number(document.getElementById('cl-points').value),
+        Remarks: document.getElementById('cl-remark').value,
+        LeaderID: st.id
+      };
+      APP.clubPoints.push(row);
+      persistLocal();
+      apiCall({ action: 'addClubPoint', row });
+      e.target.reset();
+      renderLeaderboards();
+      renderStudentActivities();
+      alert('Club performance points updated!');
+    }
+
+    function submitFinanceEntry(e) {
+      e.preventDefault();
+      const st = APP.user.data;
+      const tx = {
+        ID: 'REC-' + Math.floor(100000 + Math.random() * 900000),
+        Type: document.getElementById('fin-type').value,
+        MemberName: document.getElementById('fin-member').value.trim(),
+        Amount: Number(document.getElementById('fin-amount').value),
+        IsPremium: document.getElementById('fin-premium').checked,
+        Purpose: document.getElementById('fin-purpose').value.trim(),
+        Date: new Date().toISOString().split('T')[0],
+        RecordedBy: st.name
+      };
+      APP.finance.push(tx);
+      persistLocal();
+      apiCall({ action: 'addFinance', row: tx });
+      e.target.reset();
+      renderFinanceDesk();
+      openDigitalReceipt(tx.ID);
+    }
+
+    function renderFinanceDesk() {
+      const balance = APP.finance.reduce((sum, t) => t.Type === 'Income' ? sum + Number(t.Amount) : sum - Number(t.Amount), 0);
+      document.getElementById('fin-balance-badge').textContent = `Balance: ₹${balance}`;
+      const premiums = [...new Set(APP.finance.filter(t => t.IsPremium).map(t => t.MemberName))];
+      document.getElementById('fin-premium-list').innerHTML = premiums.length
+        ? premiums.map(m => `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-bold">⭐ ${m}</span>`).join('')
+        : `<span class="text-slate-400">No premium members added yet.</span>`;
+
+      document.getElementById('fin-tx-list').innerHTML = APP.finance.slice().reverse().map(t => `
+        <div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-100">
+          <div>
+            <div class="font-bold text-slate-800">${t.MemberName} ${t.IsPremium ? '⭐' : ''} <span class="text-[10px] text-slate-400">(${t.ID})</span></div>
+            <div class="text-[10px] text-slate-500">${t.Purpose} • ${t.Date}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="font-black ${t.Type === 'Income' ? 'text-emerald-700' : 'text-red-600'}">${t.Type === 'Income' ? '+' : '-'}₹${t.Amount}</span>
+            <button onclick="openDigitalReceipt('${t.ID}')" class="px-2 py-1 bg-brand text-white rounded text-[10px] font-bold">Receipt</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openDigitalReceipt(txId) {
+      const tx = APP.finance.find(t => t.ID === txId);
+      if (!tx) return;
+      document.getElementById('receipt-content').innerHTML = `
+        <div class="flex justify-between"><span>Receipt No:</span><b>${tx.ID}</b></div>
+        <div class="flex justify-between"><span>Date:</span><b>${tx.Date}</b></div>
+        <div class="flex justify-between"><span>Member / Payer:</span><b>${tx.MemberName} ${tx.IsPremium ? '(Premium Member ⭐)' : ''}</b></div>
+        <div class="flex justify-between"><span>Category:</span><b>${tx.Type}</b></div>
+        <div class="flex justify-between"><span>Purpose:</span><b>${tx.Purpose}</b></div>
+        <div class="flex justify-between text-sm pt-2 border-t"><span>Amount:</span><b class="text-brand">₹${tx.Amount}</b></div>
+        <div class="text-[10px] text-slate-400 pt-2 text-right">Authorized by: ${tx.RecordedBy} (Finance Club)</div>
+      `;
+      document.getElementById('receipt-modal').classList.remove('hidden');
+    }
+
+    function submitBookLog(e) {
+      e.preventDefault();
+      const st = APP.user.data;
+      const row = {
+        ID: 'BK_' + Date.now(),
+        StudentID: st.id,
+        BookTitle: document.getElementById('bk-title').value,
+        Author: document.getElementById('bk-author').value,
+        Summary: document.getElementById('bk-summary').value,
+        Date: new Date().toISOString().split('T')[0]
+      };
+      APP.books.push(row);
+      persistLocal();
+      apiCall({ action: 'addBook', row });
+      e.target.reset();
+      renderStudentActivities();
+      alert('Library / Extra book review saved!');
+    }
+
+    function submitLeaveRequest(e) {
+      e.preventDefault();
+      const st = APP.user.data;
+      const row = {
+        ID: 'LV_' + Date.now(),
+        StudentID: st.id,
+        FromDate: document.getElementById('lv-from').value,
+        ToDate: document.getElementById('lv-to').value,
+        Reason: document.getElementById('lv-reason').value,
+        Status: 'Pending',
+        ReviewedBy: ''
+      };
+      APP.leaves.push(row);
+      persistLocal();
+      apiCall({ action: 'saveLeave', row });
+      e.target.reset();
+      renderStudentActivities();
+      alert('Leave request submitted to Ustads!');
+    }
+
+    function renderStudentActivities() {
+      const st = APP.user.data;
+      const myClubs = APP.clubPoints.filter(c => c.StudentID === st.id);
+      document.getElementById('my-club-logs').innerHTML = myClubs.length ? myClubs.map(c => {
+        const clubObj = APP.config.clubs.find(x => x.id === c.ClubID);
+        return `<div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl">
+          <div><div class="font-bold text-slate-800">${clubObj ? clubObj.name : c.ClubID}: ${c.EventName}</div><div class="text-[10px] text-slate-500">${c.Remarks || ''} • ${c.Date}</div></div>
+          <span class="font-black ${Number(c.Points) >= 0 ? 'text-emerald-600' : 'text-red-600'}">${Number(c.Points) >= 0 ? '+' : ''}${c.Points}</span>
+        </div>`;
+      }).join('') : `<p class="text-slate-400">No club activity records yet.</p>`;
+
+      const myBooks = APP.books.filter(b => b.StudentID === st.id);
+      document.getElementById('my-books-list').innerHTML = myBooks.map(b => `
+        <div class="bg-slate-50 p-2.5 rounded-xl">
+          <div class="font-bold text-slate-800">${b.BookTitle} <span class="font-normal text-slate-500">by ${b.Author || 'Unknown'} • ${b.Date}</span></div>
+          <p class="text-slate-600 mt-0.5">${b.Summary}</p>
+        </div>
+      `).join('');
+
+      const myLeaves = APP.leaves.filter(l => l.StudentID === st.id);
+      document.getElementById('my-leaves-list').innerHTML = myLeaves.map(l => `
+        <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl">
+          <div><div class="font-bold">${l.FromDate} to ${l.ToDate}</div><div class="text-slate-500">${l.Reason} ${l.ReviewedBy ? `(By: ${l.ReviewedBy})` : ''}</div></div>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${l.Status === 'Approved' ? 'bg-emerald-100 text-emerald-800' : l.Status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'}">${l.Status}</span>
+        </div>
+      `).join('');
+    }
+
+    // ================= PROFILE & REPORT CARD =================
+    function renderStudentProfile() {
+      const st = APP.user.data;
+      const prof = (APP.config.profiles && APP.config.profiles[st.id]) || {};
+      document.getElementById('prof-id').textContent = st.id;
+      document.getElementById('prof-name').textContent = st.name;
+      document.getElementById('prof-meta').textContent = `${st.category} • ${st.team} • ${st.batch}`;
+      const leadClubs = APP.config.clubs.filter(c => c.leaderId === st.id);
+      document.getElementById('prof-club-role').textContent = leadClubs.length ? `Leader: ${leadClubs.map(c => c.name).join(', ')}` : '';
+
+      if (prof.photo) document.getElementById('prof-photo').src = prof.photo;
+      else document.getElementById('prof-photo').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(st.name)}&background=0f3d3e&color=fff`;
+
+      document.getElementById('pd-guardian').value = prof.guardian || '';
+      document.getElementById('pd-phone').value = prof.phone || '';
+      document.getElementById('pd-aadhaar').value = prof.aadhaar || '';
+      document.getElementById('pd-dob').value = prof.dob || '';
+      document.getElementById('pd-address').value = prof.address || '';
+
+      const myBadges = APP.badges.filter(b => b.StudentID === st.id);
+      document.getElementById('prof-badges').innerHTML = myBadges.length ? myBadges.map(b => `
+        <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold">${b.Icon} ${b.BadgeTitle}</span>
+      `).join('') : `<span class="text-xs text-slate-400">No badges earned yet.</span>`;
+
+      const myEvals = APP.evaluations.filter(e => e.StudentID === st.id);
+      document.getElementById('prof-evaluations').innerHTML = myEvals.length ? myEvals.map(e => `
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+          <div class="flex justify-between font-bold text-slate-800"><span>${e.UstadName} (${e.Date})</span><span class="text-brand">${e.Points >= 0 ? '+' : ''}${e.Points} pts</span></div>
+          <div class="text-[11px] text-slate-600 mt-0.5">${e.Kithab ? `Subject: <b class="arabic">${e.Kithab}</b> • ` : ''}Note: <b>${e.NoteComplete}</b> • Behaviour: <b>${e.Behaviour}</b> • Academics: <b>${e.Academics}</b></div>
+          <p class="text-slate-700 mt-1">${e.Remarks}</p>
+        </div>
+      `).join('') : `<p class="text-slate-400">No remarks from Ustads yet.</p>`;
+
+      const scores = getStudentScores(st.id);
+      const curMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+      document.getElementById('rep-month').textContent = curMonth;
+      document.getElementById('rep-body').innerHTML = `
+        <div class="bg-slate-50 p-2.5 rounded-lg"><span class="text-slate-400 block text-[10px]">Student Name</span><b>${st.name} (${st.id})</b></div>
+        <div class="bg-slate-50 p-2.5 rounded-lg"><span class="text-slate-400 block text-[10px]">Batch & Team</span><b>${st.batch} • ${st.team}</b></div>
+        <div class="bg-teal-50 p-2.5 rounded-lg"><span class="text-teal-700 block text-[10px]">Monthly Daily Points</span><b class="text-base text-brand">${scores.daily} pts</b></div>
+        <div class="bg-amber-50 p-2.5 rounded-lg"><span class="text-amber-700 block text-[10px]">Competition Points</span><b class="text-base text-amber-800">${scores.comp} pts</b></div>
+        <div class="bg-indigo-50 p-2.5 rounded-lg"><span class="text-indigo-700 block text-[10px]">Club Performance</span><b class="text-base text-indigo-800">${scores.club} pts</b></div>
+        <div class="bg-rose-50 p-2.5 rounded-lg"><span class="text-rose-700 block text-[10px]">Academic & Projects</span><b class="text-base text-rose-800">${scores.acad} pts</b></div>
+      `;
+    }
+
+    function uploadProfilePhoto(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      compressSquareImage(file, 400, (base64) => {
+        const st = APP.user.data;
+        if (!APP.config.profiles) APP.config.profiles = {};
+        if (!APP.config.profiles[st.id]) APP.config.profiles[st.id] = {};
+        APP.config.profiles[st.id].photo = base64;
+        persistLocal();
+        apiCall({ action: 'syncConfig', config: APP.config });
+        renderStudentProfile();
+        alert('Profile photo updated!');
+      });
+    }
+
+    function savePersonalProfile(e) {
+      e.preventDefault();
+      const st = APP.user.data;
+      if (!APP.config.profiles) APP.config.profiles = {};
+      const old = APP.config.profiles[st.id] || {};
+      APP.config.profiles[st.id] = {
+        ...old,
+        guardian: document.getElementById('pd-guardian').value,
+        phone: document.getElementById('pd-phone').value,
+        aadhaar: document.getElementById('pd-aadhaar').value,
+        dob: document.getElementById('pd-dob').value,
+        address: document.getElementById('pd-address').value
+      };
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+      alert('Personal profile updated!');
+    }
+
+    function shareReportWhatsApp() {
+      const st = APP.user.data;
+      const scores = getStudentScores(st.id);
+      const prof = (APP.config.profiles && APP.config.profiles[st.id]) || {};
+      const msg = `*Isha-athussunna Dawa Dars - Monthly Progress Report*%0A*Student:* ${st.name} (${st.id})%0A*Batch:* ${st.batch} | *Team:* ${st.team}%0A• Daily Routine Score: *${scores.daily} pts*%0A• Competition Score: *${scores.comp} pts*%0A• Club Performance: *${scores.club} pts*%0A• Academic & Projects: *${scores.acad} pts*%0A_Generated via i-Con Dars Portal_`;
+      const phone = prof.phone ? prof.phone.replace(/\D/g, '') : '';
+      window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+    }
+
+    function switchStTab(tab) {
+      ['home', 'ranks', 'activities', 'profile'].forEach(t => {
+        document.getElementById(`st-tab-${t}`).classList.toggle('hidden', t !== tab);
+      });
+      document.querySelectorAll('.st-nav-btn').forEach(b => {
+        b.classList.toggle('text-brand', b.dataset.tab === tab);
+      });
+    }
+
+    // ================= USTAD / ADMIN PORTAL =================
+    function initUstadDashboard() {
+      document.getElementById('ustad-welcome').textContent = `Welcome, ${APP.user.data.name}`;
+      const stOpts = APP.config.students.map(s => `<option value="${s.id}">${s.id} - ${s.name} (${s.batch})</option>`).join('');
+      ['bg-student', 'cp-student'].forEach(id => document.getElementById(id).innerHTML = stOpts);
+      onEvalBatchChange();
+
+      const awards = calculate6MonthlyAwards();
+      document.getElementById('ust-awards-preview').innerHTML = awards.map(a => `
+        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+          <span>${a.icon} <b>${a.title}:</b> ${a.winner && a.winner[a.valKey] > 0 ? a.winner.student.name : '--'}</span>
+          <b class="text-brand">${a.winner ? a.winner[a.valKey] : 0}</b>
+        </div>
+      `).join('');
+
+      document.getElementById('cfg-api-url').value = APP.apiUrl;
+      renderUstadProjects();
+      renderUstadComps();
+      renderUstadLeaves();
+      renderUstadFinanceOverview();
+      renderUstadClubsEditor();
+      renderUstadStudents();
+      renderCfgDailyItems();
+      renderCfgKithabs();
+      renderCfgTimetable();
+    }
+
+    function onEvalBatchChange() {
+      const b = document.getElementById('ev-batch-filter').value;
+      const filteredStudents = b === 'ALL' ? APP.config.students : APP.config.students.filter(s => s.batch === b);
+      document.getElementById('ev-student').innerHTML = filteredStudents.map(s => `<option value="${s.id}">${s.id} - ${s.name} (${s.batch})</option>`).join('');
+      syncEvalKithabsForStudent();
+    }
+
+    function syncEvalKithabsForStudent() {
+      const sid = document.getElementById('ev-student').value;
+      const st = APP.config.students.find(s => s.id === sid);
+      const batch = st ? st.batch : 'Batch A';
+      const kithabs = APP.config.kithabukal[batch] || [];
+      document.getElementById('ev-kithab').innerHTML = kithabs.map(k => `<option value="${k}">${k}</option>`).join('') + `<option value="General">General / All Subjects</option>`;
+    }
+
+    function switchUstadTab(tab) {
+      ['eval', 'projects', 'comp', 'leaves', 'students', 'settings'].forEach(t => {
+        document.getElementById(`ust-tab-${t}`).classList.toggle('hidden', t !== tab);
+      });
+      document.querySelectorAll('.ust-tab-btn').forEach(b => {
+        b.className = b.dataset.utab === tab ? 'ust-tab-btn px-3 py-1.5 rounded-lg bg-white text-brand' : 'ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white';
+      });
+    }
+
+    function submitEvaluation(e) {
+      e.preventDefault();
+      const row = {
+        ID: 'EV_' + Date.now(),
+        StudentID: document.getElementById('ev-student').value,
+        Kithab: document.getElementById('ev-kithab').value,
+        Date: new Date().toISOString().split('T')[0],
+        Behaviour: document.getElementById('ev-behav').value,
+        Academics: document.getElementById('ev-acad').value,
+        NoteComplete: document.getElementById('ev-note').value,
+        Attendance: document.getElementById('ev-att').value,
+        Points: Number(document.getElementById('ev-points').value) || 0,
+        Remarks: document.getElementById('ev-remarks').value,
+        UstadName: APP.user.data.name
+      };
+      APP.evaluations.push(row);
+      persistLocal();
+      apiCall({ action: 'addEvaluation', row });
+      document.getElementById('ev-remarks').value = '';
+      alert('Evaluation & subject note check saved to student profile!');
+    }
+
+    function submitBadge(e) {
+      e.preventDefault();
+      const row = {
+        ID: 'BG_' + Date.now(),
+        StudentID: document.getElementById('bg-student').value,
+        BadgeTitle: document.getElementById('bg-title').value,
+        Icon: document.getElementById('bg-icon').value,
+        Reason: document.getElementById('bg-reason').value,
+        Date: new Date().toISOString().split('T')[0],
+        AwardedBy: APP.user.data.name
+      };
+      APP.badges.push(row);
+      persistLocal();
+      apiCall({ action: 'addBadge', row });
+      e.target.reset();
+      alert('Merit Badge awarded!');
+    }
+
+    function createProject(e) {
+      e.preventDefault();
+      const row = {
+        ID: 'PJ_' + Date.now(),
+        Title: document.getElementById('pj-title').value,
+        Description: document.getElementById('pj-desc').value,
+        DueDate: document.getElementById('pj-due').value,
+        Points: Number(document.getElementById('pj-pts').value) || 10,
+        TargetBatch: document.getElementById('pj-batch').value,
+        CompletedByJSON: '[]',
+        SubmissionsJSON: '{}',
+        ApprovalsJSON: '{}',
+        CreatedBy: APP.user.data.name
+      };
+      APP.projects.push(row);
+      persistLocal();
+      apiCall({ action: 'saveProject', row });
+      e.target.reset();
+      renderUstadProjects();
+      alert(`Weekly Project published by ${APP.user.data.name}!`);
+    }
+
+    function toggleProjectDone(projId, studentId) {
+      const proj = APP.projects.find(p => p.ID === projId);
+      if (!proj) return;
+      let done = [];
+      let approvals = {};
+      try { done = JSON.parse(proj.CompletedByJSON || '[]'); } catch(e) {}
+      try { approvals = JSON.parse(proj.ApprovalsJSON || '{}'); } catch(e) {}
+
+      if (done.includes(studentId)) {
+        done = done.filter(id => id !== studentId);
+        delete approvals[studentId];
+      } else {
+        done.push(studentId);
+        approvals[studentId] = APP.user.data.name;
+      }
+      proj.CompletedByJSON = JSON.stringify(done);
+      proj.ApprovalsJSON = JSON.stringify(approvals);
+      persistLocal();
+      apiCall({ action: 'saveProject', row: proj });
+      renderUstadProjects();
+    }
+
+    function renderUstadProjects() {
+      document.getElementById('ust-projects-list').innerHTML = APP.projects.slice().reverse().map(p => {
+        let done = [];
+        let subs = {};
+        let approvals = {};
+        try { done = JSON.parse(p.CompletedByJSON || '[]'); } catch(e) {}
+        try { subs = JSON.parse(p.SubmissionsJSON || '{}'); } catch(e) {}
+        try { approvals = JSON.parse(p.ApprovalsJSON || '{}'); } catch(e) {}
+        const targets = APP.config.students.filter(s => p.TargetBatch === 'ALL' || s.category === p.TargetBatch || s.batch === p.TargetBatch);
+        return `
+          <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-2.5">
+            <div class="flex justify-between items-start">
+              <div>
+                <h4 class="font-extrabold text-sm text-slate-800">${p.Title}</h4>
+                <p class="text-[11px] text-slate-500">Assigned by: <b>${p.CreatedBy || 'Ustad'}</b> • Due: ${p.DueDate} • +${p.Points} pts • Target: ${p.TargetBatch}</p>
+              </div>
+              <span class="text-xs font-bold text-brand">${done.length}/${targets.length} Ticked</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-2 border-t border-slate-100">
+              ${targets.map(s => {
+                const isDone = done.includes(s.id);
+                const sub = subs[s.id];
+                const appBy = approvals[s.id];
+                return `
+                  <div class="flex items-center justify-between p-2 rounded-xl border ${isDone ? 'bg-emerald-50 border-emerald-200' : sub ? 'bg-amber-50 border-amber-200' : 'bg-slate-50 border-slate-200'}">
+                    <div class="text-[11px] pr-2">
+                      <div class="font-bold text-slate-800">${s.name}</div>
+                      <div class="text-[10px] text-slate-500">${sub ? `Submitted: "${sub.note}"` : 'Not submitted yet'}</div>
+                      ${isDone && appBy ? `<div class="text-[10px] font-bold text-emerald-700">✓ Ticked by ${appBy}</div>` : ''}
+                    </div>
+                    <button onclick="toggleProjectDone('${p.ID}', '${s.id}')" class="text-[11px] px-2.5 py-1 rounded-lg font-bold shrink-0 ${isDone ? 'bg-emerald-600 text-white' : 'bg-white border border-slate-300 text-slate-700'}">
+                      ${isDone ? '✓ Approved' : 'Tick Approve'}
+                    </button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function submitCompetition(e) {
+      e.preventDefault();
+      const row = {
+        ID: 'CP_' + Date.now(),
+        Title: document.getElementById('cp-title').value,
+        Date: new Date().toISOString().split('T')[0],
+        StudentID: document.getElementById('cp-student').value,
+        Position: document.getElementById('cp-pos').value,
+        Points: Number(document.getElementById('cp-pts').value) || 0,
+        AddedBy: APP.user.data.name
+      };
+      APP.competitions.push(row);
+      persistLocal();
+      apiCall({ action: 'addCompetition', row });
+      e.target.reset();
+      renderUstadComps();
+      alert('Individual competition result added!');
+    }
+
+    function submitTeamCompetition(e) {
+      e.preventDefault();
+      const teamName = document.getElementById('tcp-team').value;
+      const row = {
+        ID: 'TCP_' + Date.now(),
+        Title: document.getElementById('tcp-title').value,
+        Date: new Date().toISOString().split('T')[0],
+        StudentID: `TEAM:${teamName}`,
+        Position: document.getElementById('tcp-pos').value,
+        Points: Number(document.getElementById('tcp-pts').value) || 0,
+        AddedBy: APP.user.data.name
+      };
+      APP.competitions.push(row);
+      persistLocal();
+      apiCall({ action: 'addCompetition', row });
+      e.target.reset();
+      renderUstadComps();
+      alert(`Direct points added to ${teamName}!`);
+    }
+
+    function renderUstadComps() {
+      document.getElementById('ust-comp-list').innerHTML = APP.competitions.slice(-15).reverse().map(c => {
+        const isTeam = String(c.StudentID).startsWith('TEAM:');
+        const label = isTeam ? `🏆 ${String(c.StudentID).replace('TEAM:', '')} (Team)` : ((APP.config.students.find(s => s.id === c.StudentID) || {}).name || c.StudentID);
+        return `<div class="flex justify-between p-2 bg-slate-50 rounded-lg"><span><b>${label}</b> — ${c.Title} (${c.Position}) <span class="text-slate-400">by ${c.AddedBy || 'Ustad'}</span></span><b class="text-brand">+${c.Points}</b></div>`;
+      }).join('');
+    }
+
+    function submitNotice(e) {
+      e.preventDefault();
+      const row = {
+        ID: 'NT_' + Date.now(),
+        Title: document.getElementById('nt-title').value,
+        Message: document.getElementById('nt-msg').value,
+        Date: new Date().toISOString().split('T')[0],
+        Priority: 'Normal',
+        PostedBy: APP.user.data.name
+      };
+      APP.notices.push(row);
+      persistLocal();
+      apiCall({ action: 'addNotice', row });
+      e.target.reset();
+      alert('Notice posted!');
+    }
+
+    function updateLeaveStatus(leaveId, status) {
+      const lv = APP.leaves.find(l => l.ID === leaveId);
+      if (!lv) return;
+      lv.Status = status;
+      lv.ReviewedBy = APP.user.data.name;
+      persistLocal();
+      apiCall({ action: 'saveLeave', row: lv });
+      renderUstadLeaves();
+    }
+
+    function renderUstadLeaves() {
+      document.getElementById('ust-leaves-list').innerHTML = APP.leaves.slice().reverse().map(l => {
+        const st = APP.config.students.find(s => s.id === l.StudentID);
+        return `
+          <div class="p-2.5 bg-slate-50 rounded-xl space-y-1.5">
+            <div class="flex justify-between font-bold"><span>${st ? st.name : l.StudentID}</span><span>${l.Status} ${l.ReviewedBy ? `(${l.ReviewedBy})` : ''}</span></div>
+            <div class="text-slate-600">${l.FromDate} to ${l.ToDate}: ${l.Reason}</div>
+            ${l.Status === 'Pending' ? `<div class="flex gap-2"><button onclick="updateLeaveStatus('${l.ID}', 'Approved')" class="px-3 py-1 bg-emerald-600 text-white rounded font-bold">Approve</button><button onclick="updateLeaveStatus('${l.ID}', 'Rejected')" class="px-3 py-1 bg-red-600 text-white rounded font-bold">Reject</button></div>` : ''}
+          </div>
+        `;
+      }).join('') || `<p class="text-slate-400">No leave requests.</p>`;
+    }
+
+    function renderUstadFinanceOverview() {
+      const balance = APP.finance.reduce((sum, t) => t.Type === 'Income' ? sum + Number(t.Amount) : sum - Number(t.Amount), 0);
+      document.getElementById('ust-fin-balance').textContent = `Balance: ₹${balance}`;
+      document.getElementById('ust-fin-list').innerHTML = APP.finance.length ? APP.finance.slice(-10).reverse().map(t => `
+        <div class="flex justify-between p-2 bg-slate-50 rounded-lg">
+          <span><b>${t.MemberName}</b> ${t.IsPremium ? '⭐' : ''} — ${t.Purpose} (${t.Date})</span>
+          <b class="${t.Type === 'Income' ? 'text-emerald-700' : 'text-red-600'}">${t.Type === 'Income' ? '+' : '-'}₹${t.Amount}</b>
+        </div>
+      `).join('') : `<p class="text-slate-400">No Finance Club transactions recorded yet.</p>`;
+    }
+
+    function renderUstadClubsEditor() {
+      document.getElementById('ust-clubs-editor').innerHTML = APP.config.clubs.map((c, idx) => `
+        <div class="flex items-center justify-between gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-200/70">
+          <div class="font-bold text-slate-800">${c.id} • ${c.name}</div>
+          <select onchange="changeClubLeader(${idx}, this.value)" class="border border-slate-200 bg-white rounded-lg px-2 py-1 font-semibold text-brand max-w-[170px]">
+            ${APP.config.students.map(s => `<option value="${s.id}" ${s.id === c.leaderId ? 'selected' : ''}>${s.id} - ${s.name}</option>`).join('')}
+          </select>
+        </div>
+      `).join('');
+    }
+
+    function changeClubLeader(clubIdx, newStudentId) {
+      const st = APP.config.students.find(s => s.id === newStudentId);
+      if (!st) return;
+      APP.config.clubs[clubIdx].leaderId = st.id;
+      APP.config.clubs[clubIdx].leaderName = st.name;
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+      alert(`${APP.config.clubs[clubIdx].name} leader updated to ${st.name}!`);
+    }
+
+    function addNewStudent(e) {
+      e.preventDefault();
+      const id = document.getElementById('ns-id').value.trim().toUpperCase();
+      if (APP.config.students.some(s => s.id === id)) return alert('Student ID already exists!');
+      APP.config.students.push({
+        id,
+        name: document.getElementById('ns-name').value.trim().toUpperCase(),
+        category: document.getElementById('ns-cat').value,
+        team: document.getElementById('ns-team').value,
+        batch: document.getElementById('ns-batch').value
+      });
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+      e.target.reset();
+      initUstadDashboard();
+      alert(`Student ${id} added!`);
+    }
+
+    function updateStudentField(id, field, val) {
+      const st = APP.config.students.find(s => s.id === id);
+      if (!st) return;
+      st[field] = val;
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+    }
+
+    function renderUstadStudents() {
+      const q = (document.getElementById('st-search').value || '').toLowerCase();
+      const list = APP.config.students.filter(s => s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q));
+      document.getElementById('ust-students-list').innerHTML = list.map(s => {
+        const sc = getStudentScores(s.id);
+        return `
+          <div class="py-2.5 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <div class="font-bold text-slate-800">${s.id} • ${s.name}</div>
+              <div class="flex flex-wrap gap-1.5 mt-1">
+                <select onchange="updateStudentField('${s.id}', 'category', this.value)" class="border border-slate-200 rounded px-1.5 py-0.5 text-[11px]">
+                  ${["Sub Junior", "Junior", "Senior"].map(c => `<option ${s.category === c ? 'selected' : ''}>${c}</option>`).join('')}
+                </select>
+                <select onchange="updateStudentField('${s.id}', 'batch', this.value)" class="border border-slate-200 rounded px-1.5 py-0.5 text-[11px]">
+                  ${["Batch A", "Batch B", "Batch C", "Batch D", "Batch E", "Batch F", "Batch G"].map(b => `<option ${s.batch === b ? 'selected' : ''}>${b}</option>`).join('')}
+                </select>
+                <select onchange="updateStudentField('${s.id}', 'team', this.value)" class="border border-slate-200 rounded px-1.5 py-0.5 text-[11px]">
+                  ${APP.config.teams.map(t => `<option ${s.team === t ? 'selected' : ''}>${t}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-brand">D:${sc.daily} | C:${sc.comp}</span>
+              <button onclick="viewStudentDirectory('${s.id}')" class="px-2.5 py-1 bg-teal-50 text-brand font-bold rounded-lg border border-teal-200">Details</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function viewStudentDirectory(id) {
+      const s = APP.config.students.find(x => x.id === id);
+      const prof = (APP.config.profiles && APP.config.profiles[id]) || {};
+      const sc = getStudentScores(id);
+      document.getElementById('st-detail-body').innerHTML = `
+        <div class="flex justify-between items-center border-b pb-2">
+          <h3 class="font-extrabold text-brand">${s.name} (${s.id})</h3>
+          <button onclick="document.getElementById('st-detail-modal').classList.add('hidden')" class="font-bold text-slate-400">✕</button>
+        </div>
+        <div class="text-xs space-y-1.5">
+          <p><b>Category / Batch / Team:</b> ${s.category} • ${s.batch} • ${s.team}</p>
+          <p><b>Guardian:</b> ${prof.guardian || 'Not set'} | <b>Phone:</b> ${prof.phone || 'Not set'}</p>
+          <p><b>Reference ID:</b> ${prof.aadhaar || 'Not set'} | <b>DOB/Blood:</b> ${prof.dob || 'Not set'}</p>
+          <p><b>Address:</b> ${prof.address || 'Not set'}</p>
+          <div class="p-2.5 bg-slate-50 rounded-xl font-bold text-brand">Daily: ${sc.daily} | Comp: ${sc.comp} | Club: ${sc.club} | Acad/Proj: ${sc.acad}</div>
+        </div>
+      `;
+      document.getElementById('st-detail-modal').classList.remove('hidden');
+    }
+
+    // ================= DYNAMIC APP CONFIG EDITOR (USTADS) =================
+    function saveApiUrl() {
+      APP.apiUrl = document.getElementById('cfg-api-url').value.trim();
+      localStorage.setItem('icon_api_url', APP.apiUrl);
+      apiCall({ action: 'syncConfig', config: APP.config });
+      alert('API URL saved & initial configuration synced to Google Sheet!');
+    }
+
+    function uploadDarsLogo(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      compressSquareImage(file, 512, (base64) => {
+        APP.config.darsLogo = base64;
+        persistLocal();
+        applyBranding();
+        apiCall({ action: 'syncConfig', config: APP.config });
+        alert('Dars Logo updated across the app!');
+      });
+    }
+
+    function renderCfgDailyItems() {
+      document.getElementById('cfg-daily-items').innerHTML = APP.config.dailyItems.map((it, idx) => `
+        <div class="flex items-center justify-between bg-slate-50 p-2 rounded-lg">
+          <span><b>${it.label}</b> (${it.type === 'bool' ? 'Yes/No' : `Per ${it.divisor}`}) — <b>${it.points} pts</b></span>
+          <button onclick="removeDailyItem(${idx})" class="text-red-600 font-bold px-2">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    function addNewDailyItem() {
+      const label = prompt("Enter Habit / Ibadah Name:");
+      if (!label) return;
+      const type = confirm("Click OK for Yes/No Toggle, or Cancel for Number Count") ? "bool" : "num";
+      const points = Number(prompt("Points awarded:", "5")) || 5;
+      const divisor = type === 'num' ? (Number(prompt("Per how many units? (e.g. 1 or 4):", "1")) || 1) : 1;
+      APP.config.dailyItems.push({ key: 'custom_' + Date.now(), label, type, points, divisor });
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+      renderCfgDailyItems();
+    }
+
+    function removeDailyItem(idx) {
+      if (!confirm('Remove this daily routine item?')) return;
+      APP.config.dailyItems.splice(idx, 1);
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+      renderCfgDailyItems();
+    }
+
+    function renderCfgKithabs() {
+      const b = document.getElementById('cfg-batch-select').value;
+      const list = APP.config.kithabukal[b] || [];
+      document.getElementById('cfg-kithab-tags').innerHTML = list.map((k, idx) => `
+        <span class="arabic inline-flex items-center gap-1.5 px-3 py-1 bg-slate-100 rounded-full text-xs font-bold">
+          ${k} <button onclick="removeKithab('${b}', ${idx})" class="text-red-500">×</button>
+        </span>
+      `).join('');
+    }
+
+    function addKithabToBatch() {
+      const b = document.getElementById('cfg-batch-select').value;
+      const val = document.getElementById('cfg-new-kithab').value.trim();
+      if (!val) return;
+      if (!APP.config.kithabukal[b]) APP.config.kithabukal[b] = [];
+      APP.config.kithabukal[b].push(val);
+      document.getElementById('cfg-new-kithab').value = '';
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+      renderCfgKithabs();
+      syncEvalKithabsForStudent();
+    }
+
+    function removeKithab(batch, idx) {
+      APP.config.kithabukal[batch].splice(idx, 1);
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+      renderCfgKithabs();
+    }
+
+    function renderCfgTimetable() {
+      const b = document.getElementById('cfg-tt-batch').value;
+      const tt = APP.config.timetables[b];
+      if (!tt) return;
+      let html = `<table class="w-full text-[11px] border-collapse border border-slate-200"><thead><tr class="bg-brand text-white"><th class="p-1.5 border">DAY</th>${tt.slots.map((s, si) => `<th class="p-1 border"><input value="${s}" onchange="updateTtSlot('${b}', ${si}, this.value)" class="w-20 bg-white/10 text-white text-center rounded px-1 py-0.5 text-[10px]" /></th>`).join('')}</tr></thead><tbody>`;
+      Object.keys(tt.days).forEach(d => {
+        html += `<tr><td class="p-1.5 border font-bold bg-slate-50">${d}</td>${tt.days[d].map((c, ci) => `<td class="p-1 border"><input value="${c}" onchange="updateTtCell('${b}', '${d}', ${ci}, this.value)" class="w-24 arabic text-center border border-slate-200 rounded px-1 py-0.5" /></td>`).join('')}</tr>`;
+      });
+      html += `</tbody></table>`;
+      document.getElementById('cfg-tt-editor').innerHTML = html;
+    }
+
+    function updateTtSlot(batch, slotIdx, val) {
+      APP.config.timetables[batch].slots[slotIdx] = val.trim();
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+    }
+
+    function updateTtCell(batch, day, cellIdx, val) {
+      APP.config.timetables[batch].days[day][cellIdx] = val.trim();
+      persistLocal();
+      apiCall({ action: 'syncConfig', config: APP.config });
+    }
+
+    function compressSquareImage(file, maxSize, cb) {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const scale = Math.min(maxSize / img.width, maxSize / img.height, 1);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          cb(canvas.toDataURL('image/png', 0.9));
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // ================= INITIALIZE PWA & BOOT =================
+    (function boot() {
+      const manifest = {
+        name: "i-Con | Isha-athussunna Dawa Dars",
+        short_name: "i-Con",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#0f3d3e",
+        theme_color: "#0f3d3e"
+      };
+      document.getElementById('manifest-placeholder').setAttribute('href', 'data:application/manifest+json,' + encodeURIComponent(JSON.stringify(manifest)));
+      applyBranding();
+      if (APP.user) renderCurrentRole();
+      if (APP.apiUrl) syncFromCloud(false);
+    })();
+  </script>
+</body>
+</html>
