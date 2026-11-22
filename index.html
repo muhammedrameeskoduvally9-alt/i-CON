@@ -118,6 +118,25 @@
         <button onclick="openTimetableModal()" class="mt-3 w-full text-center text-xs font-semibold text-teal-100 hover:text-white underline">View Full Weekly Timetable & Kithabukal →</button>
       </div>
 
+      <!-- Daily Newspaper Quiz Launcher Card (Direct Auto-ID Link to Quiz App) -->
+      <div class="bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 rounded-2xl p-4 shadow-md text-slate-950 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[10px] font-black uppercase tracking-wider bg-slate-950 text-amber-300 px-2 py-0.5 rounded-full">Live Assessment</span>
+            <span class="text-[11px] font-bold text-slate-900">Newspaper &amp; GK</span>
+          </div>
+          <h3 class="font-extrabold text-base mt-1">Daily Newspaper Online Quiz</h3>
+          <p class="text-xs text-slate-900/90 font-medium">Direct launch with your Student ID — no re-typing needed</p>
+        </div>
+        <button onclick="openQuizAppForStudent()" class="bg-slate-950 text-white hover:bg-slate-800 text-xs font-extrabold px-4 py-2.5 rounded-xl shadow flex items-center gap-1.5 transition active:scale-95">
+          <span>Start Daily Quiz</span>
+          <span>→</span>
+        </button>
+      </div>
+
+      <!-- Published Exam Results Card (Visible to Students Only When Ustad Publishes) -->
+      <div id="st-exam-results-section" class="hidden bg-white rounded-2xl p-4 border-2 border-emerald-200 shadow-sm space-y-2.5"></div>
+
       <!-- Assigned & Pending Projects Section with Student Submission -->
       <div id="st-projects-section" class="space-y-2.5"></div>
 
@@ -190,6 +209,20 @@
           <div class="text-[10px] font-bold uppercase text-slate-400">Academic & Proj.</div>
           <div id="my-stat-acad" class="text-xl font-black text-rose-600 mt-0.5">0</div>
           <div id="my-rank-acad" class="text-[10px] font-semibold text-slate-500">Ustad Desk</div>
+        </div>
+      </div>
+
+      <!-- Daily Newspaper Quiz Weekly Winners (Synced from Quiz Sheet) -->
+      <div class="bg-white rounded-2xl p-4 border border-amber-200 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="font-extrabold text-slate-800 text-sm">📰 Daily Quiz Weekly Champions</h3>
+            <p class="text-[10px] text-slate-500">Live from Daily Newspaper Quiz Portal</p>
+          </div>
+          <button onclick="fetchQuizWeeklyToppers(true)" class="text-[10px] font-bold text-amber-800 bg-amber-100 hover:bg-amber-200 px-2.5 py-1 rounded-full">↻ Refresh</button>
+        </div>
+        <div id="icon-quiz-weekly-winners" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+          <div class="p-2.5 rounded-xl bg-slate-50 text-slate-400">Loading quiz toppers...</div>
         </div>
       </div>
 
@@ -288,10 +321,20 @@
             <button type="submit" class="w-full bg-emerald-700 text-white font-bold py-2.5 rounded-lg hover:bg-emerald-800">Save Entry & Generate Receipt</button>
           </form>
 
-          <!-- Premium Members List -->
-          <div class="bg-white p-3 rounded-xl border border-slate-200 space-y-2">
-            <div class="text-xs font-extrabold text-amber-800">⭐ Premium Members Directory</div>
-            <div id="fin-premium-list" class="flex flex-wrap gap-1.5 text-xs"></div>
+          <!-- Premium Members Monthly Payment Tick Checklist -->
+          <div class="bg-white p-3 rounded-xl border border-amber-200 space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="text-xs font-extrabold text-amber-900">⭐ Premium Members Cash Payment Tick Checklist</div>
+              <div class="flex items-center gap-1.5">
+                <input type="month" id="fin-tick-month" onchange="renderFinanceDesk()" class="text-[11px] font-bold border border-slate-200 rounded-lg px-2 py-1 text-brand" />
+              </div>
+            </div>
+            <div class="flex gap-1.5">
+              <input type="text" id="fin-new-prem-name" placeholder="Add new Premium Member name..." class="flex-1 text-xs border border-slate-200 rounded-lg px-2.5 py-1.5" />
+              <input type="number" id="fin-new-prem-fee" value="100" placeholder="₹" class="w-16 text-xs border border-slate-200 rounded-lg px-2 py-1.5 text-center font-bold" />
+              <button type="button" onclick="addPremiumMemberRoster()" class="bg-amber-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-amber-700">+ Add</button>
+            </div>
+            <div id="fin-premium-list" class="space-y-1.5 text-xs max-h-60 overflow-y-auto"></div>
           </div>
 
           <!-- Recent Finance Transactions with Receipt View -->
@@ -455,6 +498,7 @@
       <div class="flex gap-1.5 overflow-x-auto no-scrollbar text-xs font-bold">
         <button onclick="switchUstadTab('eval')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white text-brand" data-utab="eval">Class & Note Check</button>
         <button onclick="switchUstadTab('projects')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="projects">Projects</button>
+        <button onclick="switchUstadTab('exams')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="exams">Exam Results</button>
         <button onclick="switchUstadTab('comp')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="comp">Competitions</button>
         <button onclick="switchUstadTab('leaves')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="leaves">Leaves, Notices & Fin</button>
         <button onclick="switchUstadTab('students')" class="ust-tab-btn px-3 py-1.5 rounded-lg bg-white/10 text-white" data-utab="students">Students & Clubs</button>
@@ -580,6 +624,66 @@
       <div id="ust-projects-list" class="space-y-3"></div>
     </section>
 
+    <!-- USTAD TAB: EXAM RESULTS ENTRY & PUBLISH PORTAL -->
+    <section id="ust-tab-exams" class="hidden space-y-4">
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="font-extrabold text-slate-800 text-sm">🎓 Ustad Exam Results Entry &amp; Publish Portal</h3>
+            <p class="text-[11px] text-slate-500">Enter marks batch-wise or student-wise. Results remain hidden from students until you click <b>Publish Result</b>.</p>
+          </div>
+          <span id="ex-pub-status-badge" class="text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">Draft Mode</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+          <div>
+            <label class="text-[10px] font-bold text-slate-500">Exam Name</label>
+            <input type="text" id="ex-term" value="Mid-Term Exam 2026" onchange="renderUstadExamGrid()" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-bold mt-0.5" />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-500">Select Batch</label>
+            <select id="ex-batch" onchange="onExamBatchChange()" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-bold text-brand mt-0.5">
+              <option value="Batch A">Batch A</option>
+              <option value="Batch B">Batch B</option>
+              <option value="Batch C">Batch C</option>
+              <option value="Batch D">Batch D</option>
+              <option value="Batch E">Batch E</option>
+              <option value="Batch F">Batch F</option>
+              <option value="Batch G">Batch G</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-500">Subject / Kithab</label>
+            <select id="ex-subject" onchange="renderUstadExamGrid()" class="w-full arabic bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-bold mt-0.5"></select>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold text-slate-500">Max Marks</label>
+            <input type="number" id="ex-max" value="100" onchange="renderUstadExamGrid()" class="w-full bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 font-bold mt-0.5" />
+          </div>
+        </div>
+
+        <div id="ust-exam-marks-grid" class="space-y-2 text-xs"></div>
+
+        <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+          <button type="button" onclick="saveExamDraftMarks(false)" class="flex-1 bg-slate-800 text-white font-bold py-2.5 px-4 rounded-xl text-xs hover:bg-slate-700">
+            Save Marks as Draft (Hidden)
+          </button>
+          <button type="button" onclick="saveExamDraftMarks(true)" class="flex-1 bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs hover:bg-emerald-800 shadow">
+            🚀 Save &amp; Publish Results to Students
+          </button>
+          <button type="button" onclick="unpublishExamSubject()" class="bg-amber-100 text-amber-900 font-bold py-2.5 px-3 rounded-xl text-xs hover:bg-amber-200">
+            Unpublish
+          </button>
+        </div>
+      </div>
+
+      <!-- Published Exams Summary List -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm space-y-2">
+        <h4 class="font-extrabold text-slate-800 text-sm">📋 Published &amp; Saved Exam Records</h4>
+        <div id="ust-published-exams-list" class="space-y-1.5 text-xs"></div>
+      </div>
+    </section>
+
     <!-- USTAD TAB 3: COMPETITIONS (INDIVIDUAL + DIRECT TEAM GROUP POINTS) -->
     <section id="ust-tab-comp" class="hidden space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -638,6 +742,10 @@
           <span id="ust-fin-balance" class="text-xs font-black text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg">Balance: ₹0</span>
         </div>
         <div id="ust-fin-list" class="space-y-1.5 text-xs"></div>
+        <div class="pt-2 border-t border-slate-100">
+          <div class="text-xs font-extrabold text-amber-800 mb-1.5">⭐ Premium Members Monthly Cash Tick Status</div>
+          <div id="ust-prem-tick-summary" class="flex flex-wrap gap-1.5 text-xs"></div>
+        </div>
       </div>
     </section>
 
@@ -687,6 +795,13 @@
         <div class="flex gap-2">
           <input type="url" id="cfg-api-url" placeholder="https://script.google.com/macros/s/.../exec" class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-2" />
           <button onclick="saveApiUrl()" class="bg-brand text-white text-xs font-bold px-4 py-2 rounded-lg">Save & Sync</button>
+        </div>
+        <div class="pt-2 border-t border-slate-100 space-y-1.5">
+          <label class="block text-xs font-bold text-slate-700">📰 Daily Newspaper Quiz Portal URL (Netlify / GitHub Link)</label>
+          <div class="flex gap-2">
+            <input type="url" id="cfg-quiz-url" placeholder="https://your-quiz-site.netlify.app" class="flex-1 text-xs border border-slate-200 rounded-lg px-3 py-2" />
+            <button onclick="saveQuizUrl()" class="bg-amber-600 text-white text-xs font-bold px-4 py-2 rounded-lg">Save Link</button>
+          </div>
         </div>
       </div>
 
@@ -941,8 +1056,13 @@
       leaves: JSON.parse(localStorage.getItem('icon_leaves')) || [],
       notices: JSON.parse(localStorage.getItem('icon_notices')) || [],
       badges: JSON.parse(localStorage.getItem('icon_badges')) || [],
+      quizUrl: localStorage.getItem('icon_quiz_url') || '',
+      quizScriptUrl: 'https://script.google.com/macros/s/AKfycbyUSKnyokpuCE8W9P4siZMUCT5h9LpcxtQGHtSxlrAx9TXW0sen3lgHXAGOE0E5QSudLg/exec',
+      quizWinners: JSON.parse(localStorage.getItem('icon_quiz_winners')) || null,
       books: JSON.parse(localStorage.getItem('icon_books')) || [],
       finance: JSON.parse(localStorage.getItem('icon_finance')) || [],
+      premiumMembers: JSON.parse(localStorage.getItem('icon_prem_members')) || [],
+      examResults: JSON.parse(localStorage.getItem('icon_exam_results')) || [],
       user: JSON.parse(sessionStorage.getItem('icon_user')) || null,
       lbCat: 'All',
       lbType: 'daily'
@@ -978,6 +1098,8 @@
       localStorage.setItem('icon_badges', JSON.stringify(APP.badges));
       localStorage.setItem('icon_books', JSON.stringify(APP.books));
       localStorage.setItem('icon_finance', JSON.stringify(APP.finance));
+      localStorage.setItem('icon_prem_members', JSON.stringify(APP.premiumMembers));
+      localStorage.setItem('icon_exam_results', JSON.stringify(APP.examResults));
     }
 
     async function apiCall(payload) {
@@ -1014,6 +1136,8 @@
           APP.badges = json.data.badges || [];
           APP.books = json.data.books || [];
           APP.finance = json.data.finance || APP.finance || [];
+          if (json.data.premiumMembers) APP.premiumMembers = json.data.premiumMembers;
+          if (json.data.examResults) APP.examResults = json.data.examResults;
           persistLocal();
           applyBranding();
           if (APP.user) renderCurrentRole();
@@ -1121,8 +1245,10 @@
       renderDailyFormFields();
       loadDailyForDate();
 
+      renderStudentExamResults();
       renderStudentProjectsSection();
       renderLeaderboards();
+      fetchQuizWeeklyToppers(false);
 
       const myClubs = APP.config.clubs.filter(c => c.leaderId === st.id);
       if (myClubs.length > 0) {
@@ -1570,13 +1696,114 @@
       openDigitalReceipt(tx.ID);
     }
 
+    function addPremiumMemberRoster() {
+      const nameInput = document.getElementById('fin-new-prem-name');
+      const feeInput = document.getElementById('fin-new-prem-fee');
+      const name = nameInput.value.trim();
+      const fee = Number(feeInput.value) || 100;
+      if (!name) return alert('Please enter Premium Member name!');
+      if (APP.premiumMembers.some(m => m.name.toLowerCase() === name.toLowerCase())) {
+        return alert('This member is already in the Premium list!');
+      }
+      APP.premiumMembers.push({
+        id: 'PM_' + Date.now(),
+        name,
+        monthlyFee: fee,
+        paidMonths: {}
+      });
+      nameInput.value = '';
+      persistLocal();
+      apiCall({ action: 'syncPremiumMembers', premiumMembers: APP.premiumMembers });
+      renderFinanceDesk();
+    }
+
+    function togglePremiumMonthTick(memberId, monthKey, isChecked) {
+      const member = APP.premiumMembers.find(m => m.id === memberId);
+      if (!member) return;
+      if (!member.paidMonths) member.paidMonths = {};
+      const st = APP.user ? APP.user.data : { name: 'Finance Club' };
+
+      if (isChecked) {
+        member.paidMonths[monthKey] = {
+          paid: true,
+          date: new Date().toISOString().split('T')[0],
+          by: st.name
+        };
+        // Automatically record cash receipt in Finance Ledger too
+        const tx = {
+          ID: 'REC-' + Math.floor(100000 + Math.random() * 900000),
+          Type: 'Income',
+          MemberName: member.name,
+          Amount: Number(member.monthlyFee) || 100,
+          IsPremium: true,
+          Purpose: `Premium Subscription (${monthKey})`,
+          Date: new Date().toISOString().split('T')[0],
+          RecordedBy: st.name
+        };
+        APP.finance.push(tx);
+        apiCall({ action: 'addFinance', row: tx });
+      } else {
+        delete member.paidMonths[monthKey];
+      }
+
+      persistLocal();
+      apiCall({ action: 'syncPremiumMembers', premiumMembers: APP.premiumMembers });
+      renderFinanceDesk();
+    }
+
+    function removePremiumMember(memberId) {
+      if (!confirm('Remove this member from Premium list?')) return;
+      APP.premiumMembers = APP.premiumMembers.filter(m => m.id !== memberId);
+      persistLocal();
+      apiCall({ action: 'syncPremiumMembers', premiumMembers: APP.premiumMembers });
+      renderFinanceDesk();
+    }
+
     function renderFinanceDesk() {
+      const monthInput = document.getElementById('fin-tick-month');
+      if (monthInput && !monthInput.value) {
+        monthInput.value = new Date().toISOString().slice(0, 7);
+      }
+      const selectedMonth = monthInput ? monthInput.value : new Date().toISOString().slice(0, 7);
+
+      // Sync any legacy premium names from transactions into premiumMembers roster
+      APP.finance.filter(t => t.IsPremium).forEach(t => {
+        if (!APP.premiumMembers.some(m => m.name.toLowerCase() === t.MemberName.toLowerCase())) {
+          APP.premiumMembers.push({
+            id: 'PM_' + Math.random().toString(36).slice(2, 8),
+            name: t.MemberName,
+            monthlyFee: Number(t.Amount) || 100,
+            paidMonths: { [String(t.Date).slice(0, 7)]: { paid: true, date: t.Date, by: t.RecordedBy || 'Finance' } }
+          });
+        }
+      });
+
       const balance = APP.finance.reduce((sum, t) => t.Type === 'Income' ? sum + Number(t.Amount) : sum - Number(t.Amount), 0);
       document.getElementById('fin-balance-badge').textContent = `Balance: ₹${balance}`;
-      const premiums = [...new Set(APP.finance.filter(t => t.IsPremium).map(t => t.MemberName))];
-      document.getElementById('fin-premium-list').innerHTML = premiums.length
-        ? premiums.map(m => `<span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 font-bold">⭐ ${m}</span>`).join('')
-        : `<span class="text-slate-400">No premium members added yet.</span>`;
+
+      const listEl = document.getElementById('fin-premium-list');
+      if (APP.premiumMembers.length === 0) {
+        listEl.innerHTML = `<div class="text-slate-400 py-2">No premium members added yet. Add names above to start ticking monthly cash payments.</div>`;
+      } else {
+        listEl.innerHTML = APP.premiumMembers.map(m => {
+          const tickInfo = m.paidMonths && m.paidMonths[selectedMonth];
+          const isPaid = !!(tickInfo && tickInfo.paid);
+          return `
+            <div class="flex items-center justify-between p-2 rounded-xl border ${isPaid ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-200'}">
+              <label class="flex items-center gap-2.5 cursor-pointer flex-1">
+                <input type="checkbox" ${isPaid ? 'checked' : ''} onchange="togglePremiumMonthTick('${m.id}', '${selectedMonth}', this.checked)" class="w-4 h-4 accent-emerald-600 rounded" />
+                <div>
+                  <div class="font-bold text-slate-800">⭐ ${m.name} <span class="text-[10px] text-slate-500">(₹${m.monthlyFee}/mo)</span></div>
+                  <div class="text-[10px] ${isPaid ? 'text-emerald-700 font-bold' : 'text-amber-700'}">
+                    ${isPaid ? `✅ Cash Paid on ${tickInfo.date}` : `⏳ Pending for ${selectedMonth}`}
+                  </div>
+                </div>
+              </label>
+              <button type="button" onclick="removePremiumMember('${m.id}')" class="text-slate-400 hover:text-red-600 px-1.5 font-bold" title="Remove">×</button>
+            </div>
+          `;
+        }).join('');
+      }
 
       document.getElementById('fin-tx-list').innerHTML = APP.finance.slice().reverse().map(t => `
         <div class="flex items-center justify-between p-2 bg-slate-50 rounded-lg border border-slate-100">
@@ -1787,6 +2014,9 @@
       `).join('');
 
       document.getElementById('cfg-api-url').value = APP.apiUrl;
+      document.getElementById('cfg-quiz-url').value = APP.quizUrl || '';
+      onExamBatchChange();
+      renderPublishedExamsList();
       renderUstadProjects();
       renderUstadComps();
       renderUstadLeaves();
@@ -1814,7 +2044,7 @@
     }
 
     function switchUstadTab(tab) {
-      ['eval', 'projects', 'comp', 'leaves', 'students', 'settings'].forEach(t => {
+      ['eval', 'exams', 'projects', 'comp', 'leaves', 'students', 'settings'].forEach(t => {
         document.getElementById(`ust-tab-${t}`).classList.toggle('hidden', t !== tab);
       });
       document.querySelectorAll('.ust-tab-btn').forEach(b => {
@@ -2044,6 +2274,261 @@
           <b class="${t.Type === 'Income' ? 'text-emerald-700' : 'text-red-600'}">${t.Type === 'Income' ? '+' : '-'}₹${t.Amount}</b>
         </div>
       `).join('') : `<p class="text-slate-400">No Finance Club transactions recorded yet.</p>`;
+
+      const curMonth = new Date().toISOString().slice(0, 7);
+      const tickWrap = document.getElementById('ust-prem-tick-summary');
+      if (tickWrap) {
+        tickWrap.innerHTML = APP.premiumMembers.length ? APP.premiumMembers.map(m => {
+          const paid = m.paidMonths && m.paidMonths[curMonth] && m.paidMonths[curMonth].paid;
+          return `<span class="px-2.5 py-1 rounded-full font-bold ${paid ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900'}">${paid ? '✅' : '⏳'} ${m.name}</span>`;
+        }).join('') : `<span class="text-slate-400">No premium members registered yet.</span>`;
+      }
+    }
+
+    // ================= EXAM RESULTS ENTRY & PUBLISH PORTAL =================
+    function onExamBatchChange() {
+      const batch = document.getElementById('ex-batch').value;
+      const kithabs = APP.config.kithabukal[batch] || ['General'];
+      document.getElementById('ex-subject').innerHTML = kithabs.map(k => `<option value="${k}">${k}</option>`).join('') + `<option value="General / Viva">General / Viva</option>`;
+      renderUstadExamGrid();
+    }
+
+    function renderUstadExamGrid() {
+      const term = document.getElementById('ex-term').value.trim() || 'Term Exam';
+      const batch = document.getElementById('ex-batch').value;
+      const subject = document.getElementById('ex-subject').value;
+      const maxMarks = Number(document.getElementById('ex-max').value) || 100;
+      const students = APP.config.students.filter(s => s.batch === batch);
+
+      const rec = APP.examResults.find(r => r.term === term && r.batch === batch && r.subject === subject);
+      const badge = document.getElementById('ex-pub-status-badge');
+      if (rec && rec.published) {
+        badge.className = 'text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800';
+        badge.textContent = `✅ Published (${rec.publishedDate || 'Live'})`;
+      } else {
+        badge.className = 'text-[11px] font-extrabold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800';
+        badge.textContent = 'Draft (Hidden from Students)';
+      }
+
+      const grid = document.getElementById('ust-exam-marks-grid');
+      if (students.length === 0) {
+        grid.innerHTML = `<div class="p-4 text-center text-slate-400">No students found in ${batch}.</div>`;
+        return;
+      }
+
+      grid.innerHTML = students.map(s => {
+        const existingMark = rec && rec.marks && rec.marks[s.id] !== undefined ? rec.marks[s.id] : '';
+        return `
+          <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200/70">
+            <div>
+              <div class="font-bold text-slate-800">${s.id} • ${s.name}</div>
+              <div class="text-[10px] text-slate-500">${s.category} • ${s.team}</div>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <input type="number" step="0.5" min="0" max="${maxMarks}" id="ex-mark-${s.id}" value="${existingMark}" placeholder="0" class="w-20 text-center font-extrabold text-sm bg-white border border-slate-300 rounded-lg py-1.5 text-brand" />
+              <span class="text-[11px] font-bold text-slate-400">/ ${maxMarks}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function saveExamDraftMarks(publishNow) {
+      const term = document.getElementById('ex-term').value.trim() || 'Term Exam';
+      const batch = document.getElementById('ex-batch').value;
+      const subject = document.getElementById('ex-subject').value;
+      const maxMarks = Number(document.getElementById('ex-max').value) || 100;
+      const students = APP.config.students.filter(s => s.batch === batch);
+
+      const marks = {};
+      students.forEach(s => {
+        const inp = document.getElementById(`ex-mark-${s.id}`);
+        if (inp && inp.value !== '') {
+          marks[s.id] = Number(inp.value);
+        }
+      });
+
+      const id = `${term}_${batch}_${subject}`;
+      const existingIdx = APP.examResults.findIndex(r => r.id === id);
+      const record = {
+        id,
+        term,
+        batch,
+        subject,
+        maxMarks,
+        marks,
+        published: publishNow ? true : (existingIdx >= 0 ? APP.examResults[existingIdx].published : false),
+        publishedDate: new Date().toISOString().split('T')[0],
+        publishedBy: APP.user.data.name
+      };
+
+      if (existingIdx >= 0) APP.examResults[existingIdx] = record;
+      else APP.examResults.push(record);
+
+      persistLocal();
+      apiCall({ action: 'saveExamResult', row: record });
+      renderUstadExamGrid();
+      renderPublishedExamsList();
+      alert(publishNow ? `✅ ${batch} — ${subject} Exam Results Published to Students!` : 'Saved as Draft (Hidden from students).');
+    }
+
+    function unpublishExamSubject() {
+      const term = document.getElementById('ex-term').value.trim() || 'Term Exam';
+      const batch = document.getElementById('ex-batch').value;
+      const subject = document.getElementById('ex-subject').value;
+      const id = `${term}_${batch}_${subject}`;
+      const rec = APP.examResults.find(r => r.id === id);
+      if (!rec) return;
+      rec.published = false;
+      persistLocal();
+      apiCall({ action: 'saveExamResult', row: rec });
+      renderUstadExamGrid();
+      renderPublishedExamsList();
+      alert('Result unpublished (now hidden from students).');
+    }
+
+    function renderPublishedExamsList() {
+      const wrap = document.getElementById('ust-published-exams-list');
+      if (!wrap) return;
+      if (APP.examResults.length === 0) {
+        wrap.innerHTML = `<p class="text-slate-400">No exam results entered yet.</p>`;
+        return;
+      }
+      wrap.innerHTML = APP.examResults.slice().reverse().map(r => `
+        <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+          <div>
+            <div class="font-bold text-slate-800">${r.term} • ${r.batch} — <span class="arabic">${r.subject}</span></div>
+            <div class="text-[10px] text-slate-500">By ${r.publishedBy} • Max: ${r.maxMarks} • ${Object.keys(r.marks || {}).length} students graded</div>
+          </div>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold ${r.published ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+            ${r.published ? 'Published' : 'Draft'}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function renderStudentExamResults() {
+      const st = APP.user.data;
+      const section = document.getElementById('st-exam-results-section');
+      if (!section) return;
+
+      const myPublished = APP.examResults.filter(
+        r => r.published && r.batch === st.batch && r.marks && r.marks[st.id] !== undefined
+      );
+
+      if (myPublished.length === 0) {
+        section.classList.add('hidden');
+        return;
+      }
+
+      section.classList.remove('hidden');
+      section.innerHTML = `
+        <div class="flex items-center justify-between border-b border-emerald-100 pb-2">
+          <div>
+            <span class="text-[10px] font-extrabold uppercase bg-emerald-600 text-white px-2 py-0.5 rounded">Official Exam Result</span>
+            <h3 class="font-extrabold text-emerald-950 text-sm mt-1">🎓 Published Examination Marks (${st.batch})</h3>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+          ${myPublished.map(r => {
+            const obtained = Number(r.marks[st.id]) || 0;
+            const pct = Math.round((obtained / (Number(r.maxMarks) || 100)) * 100);
+            return `
+              <div class="p-2.5 rounded-xl bg-emerald-50/70 border border-emerald-200 flex items-center justify-between">
+                <div>
+                  <div class="font-bold text-slate-800 arabic">${r.subject}</div>
+                  <div class="text-[10px] text-slate-500">${r.term} • Published by ${r.publishedBy}</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-sm font-black text-emerald-800">${obtained} / ${r.maxMarks}</div>
+                  <div class="text-[10px] font-bold text-emerald-600">${pct}%</div>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    // ================= QUIZ APP INTEGRATION & WEEKLY TOPPERS =================
+    function saveQuizUrl() {
+      APP.quizUrl = document.getElementById('cfg-quiz-url').value.trim();
+      localStorage.setItem('icon_quiz_url', APP.quizUrl);
+      alert('Daily Newspaper Quiz URL saved!');
+    }
+
+    function openQuizAppForStudent() {
+      const st = APP.user.data;
+      if (!APP.quizUrl) {
+        alert('Daily Newspaper Quiz URL is not configured yet. Ask Ustad to set it in Ustad Settings.');
+        return;
+      }
+      const sep = APP.quizUrl.includes('?') ? '&' : '?';
+      const targetUrl = `${APP.quizUrl}${sep}id=${encodeURIComponent(st.id)}`;
+      window.open(targetUrl, '_blank');
+    }
+
+    async function fetchQuizWeeklyToppers(notify = false) {
+      const container = document.getElementById('icon-quiz-weekly-winners');
+      if (!container) return;
+      renderQuizWeeklyToppersUI();
+      try {
+        const res = await fetch(`${APP.quizScriptUrl}?action=getState&t=${Date.now()}`);
+        const data = await res.json();
+        if (data && data.status === 'ok' && Array.isArray(data.history)) {
+          const now = new Date();
+          const day = now.getDay();
+          const diffToSat = day === 6 ? 0 : day + 1;
+          const sat = new Date(now);
+          sat.setDate(now.getDate() - diffToSat);
+          const weekStart = `${sat.getFullYear()}-${String(sat.getMonth() + 1).padStart(2, '0')}-${String(sat.getDate()).padStart(2, '0')}`;
+
+          const winners = {};
+          ['Senior', 'Junior', 'Sub Junior'].forEach(cat => {
+            const totals = new Map();
+            data.history.forEach(h => {
+              if (h.category === cat && h.mode !== 'UNLOCKED' && h.mode !== 'IN_PROGRESS' && String(h.dateStr) >= weekStart) {
+                const sid = String(h.studentId).toUpperCase();
+                if (!totals.has(sid)) {
+                  totals.set(sid, { studentId: sid, name: h.name, team: h.team, score: 0, time: 0 });
+                }
+                const rec = totals.get(sid);
+                rec.score += Number(h.score) || 0;
+                rec.time += Number(h.timeTakenSeconds) || 0;
+              }
+            });
+            const ranked = Array.from(totals.values()).sort((a, b) => (b.score - a.score) || (a.time - b.time));
+            winners[cat] = ranked[0] || null;
+          });
+
+          APP.quizWinners = winners;
+          localStorage.setItem('icon_quiz_winners', JSON.stringify(winners));
+          renderQuizWeeklyToppersUI();
+          if (notify) alert('Daily Quiz Weekly Champions updated!');
+        }
+      } catch (e) {
+        console.warn('Quiz toppers fetch skipped:', e);
+      }
+    }
+
+    function renderQuizWeeklyToppersUI() {
+      const container = document.getElementById('icon-quiz-weekly-winners');
+      if (!container) return;
+      const w = APP.quizWinners || {};
+      container.innerHTML = ['Senior', 'Junior', 'Sub Junior'].map(cat => {
+        const top = w[cat];
+        return `
+          <div class="p-3 rounded-xl bg-amber-50/70 border border-amber-200/80">
+            <div class="text-[10px] font-extrabold uppercase text-amber-800">${cat} Winner</div>
+            ${top
+              ? `<div class="font-extrabold text-slate-900 text-xs mt-1 truncate">${top.name}</div>
+                 <div class="text-[10px] text-slate-500">${top.studentId} • ${top.team}</div>
+                 <div class="text-xs font-black text-emerald-700 mt-1">${top.score} Marks</div>`
+              : `<div class="text-[11px] text-slate-400 mt-1">Awaiting quiz results...</div>`
+            }
+          </div>
+        `;
+      }).join('');
     }
 
     function renderUstadClubsEditor() {
